@@ -1,0 +1,47 @@
+### Cadastrar Cliente
+POST http://localhost:8080/cliente/cadastrar
+Content-Type: application/json
+
+{
+"nome": "Graziela Garanhanis",
+"email": "grazis.garanhani@gmail.com",
+"telefone": "45999954704",
+"cpf": "102.178.759-05",
+"endereco": {
+    "logradouro": "Rua Piratininga",
+    "numero": "194",
+    "bairro": "Centro",
+    "cep": "83255-000",
+    "cidade": "Balneário de Ipanema",
+    "uf": "PR"
+    }
+}
+
+### Buscar Cliente
+GET http://localhost:8080/cliente/buscar/1
+
+### Listar Cliente
+GET http://localhost:8080/cliente/listar
+
+### Editar Cliente
+PUT http://localhost:8080/cliente/editar/3
+Content-Type: application/json
+
+{
+"nome": "Graziela Garanhani",
+"telefone": "45999954704",
+"endereco": {
+    "logradouro": "Rua Piratininga",
+    "numero": "194",
+    "bairro": "Centro",
+    "cep": "83255-000",
+    "cidade": "Balneário de Ipanema",
+    "uf": "PR"
+    }
+}
+
+### Desativar Cliente
+DELETE http://localhost:8080/cliente/desativar/1
+
+### Ativar Cliente
+PATCH http://localhost:8080/cliente/ativar/1

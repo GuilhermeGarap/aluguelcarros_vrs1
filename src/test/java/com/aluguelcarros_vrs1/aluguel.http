@@ -1,0 +1,31 @@
+### Cadastrar Aluguel
+POST http://localhost:8080/aluguel/cadastrar
+Content-Type: application/json
+
+{
+    "dias_alugados": 10,
+    "data_inicio": "30/01/2003",
+    "cliente_id": 1,
+    "carro_id": 3
+}
+
+### Buscar Aluguel
+GET http://localhost:8080/aluguel/buscar/10
+
+### Listar Alugueis
+GET http://localhost:8080/aluguel/listar
+
+### Editar Aluguel
+POST http://localhost:8080/aluguel/editar/
+Content-Type: application/json
+
+{
+    "dias_alugados": 10,
+    "data_inicio": "30/01/2003"
+}
+
+### Desativar Aluguel
+DELETE http://localhost:8080/aluguel/desativar/3
+
+### Ativar Aluguel
+PATCH http://localhost:8080/aluguel/ativar/1

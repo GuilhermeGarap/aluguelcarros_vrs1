@@ -1,0 +1,35 @@
+Próximo: 		
+    System.out.println("3 - Devolver um Aluguel de Carro");		
+	System.out.println("5 - Buscar Aluguel por Cliente");
+	System.out.println("6 - Buscar Aluguéis por Data");
+
+    Adicionar variavel terminoData no aluguel, 
+
+    
+    private static void excluirAluguel() {
+        System.out.println("\n\nDEVOLUÇÃO DE ALUGUEL");
+        Aluguel objAluguel = new Aluguel();
+        Cliente antCliente = new Cliente();
+        antCliente.setNome(Console.readString("Informe o nome do cliente: "));
+        objAluguel.setCliente(antCliente);
+        objAluguel = AluguelPersistencia.procurarPorNome(objAluguel);
+        if (objAluguel != null) {
+            System.out.println("\n\n-----------------------");
+            System.out.println("ID: " + objAluguel.getCarro().getId());
+            System.out.println("Modelo: " + objAluguel.getCarro().getModelo());
+			System.out.println("Quantidade de carros disponíveis em total: " + objAluguel.getCarro().getUnidades());
+			System.out.println("Quantidade de carros disponíveis para aluguel: " + objAluguel.getCarro().getDisponivel());
+            System.out.println("-----------------------");
+            String resp = Console.readString("\n\nQuer devolver esse aluguel? (S/N) ");
+            if (resp.equalsIgnoreCase("S")) {
+            	AluguelNegocio.devolverCarro(objAluguel);
+                if (AluguelPersistencia.excluir(objAluguel)) {
+                    System.out.println("\n\nA devolução foi realizada");
+                } else {
+                    System.out.println("\n\nA devolução não pôde ser realizada no momento");
+                }
+            }
+        } else {
+            System.out.println("\n\nAluguel não encontrado");
+        }
+    }

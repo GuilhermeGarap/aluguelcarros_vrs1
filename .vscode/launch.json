@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AluguelcarrosVrs1Application<aluguelcarros_vrs1>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.aluguelcarros_vrs1.AluguelcarrosVrs1Application",
+            "projectName": "aluguelcarros_vrs1",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
