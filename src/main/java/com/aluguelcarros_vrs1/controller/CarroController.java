@@ -30,63 +30,96 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/carro")
 public class CarroController {
-    
+
     @Autowired
     private CarroRepository repository;
 
+    /**
+     * Endpoint para cadastrar um novo carro.
+     * @param dados Dados do carro a ser cadastrado.
+     * @param uriBuilder Utilizado para construir a URI do novo recurso.
+     * @return Resposta com os detalhes do carro cadastrado e a URI do recurso.
+     */
+    @PostMapping("/cadastrar")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoCarro> cadastrar(@RequestBody @Valid DadosCadastroCarro dados, UriComponentsBuilder uriBuilder) {
+        var carro = new Carro(dados);
+        repository.save(carro);
 
-@PostMapping("/cadastrar")
-@Transactional
-public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroCarro dados, UriComponentsBuilder uriBuilder) {
-    var carro = new Carro(dados);
-    repository.save(carro);
+        var uri = uriBuilder.path("/carro/cadastrar/{id}").buildAndExpand(carro.getId()).toUri();
 
-    var uri = uriBuilder.path("/carro/cadastrar/{id}").buildAndExpand(carro.getId()).toUri();
-
-    return ResponseEntity.created(uri).body(new DadosDetalhamentoCarro(carro));
-}
-
-@GetMapping("/listar")
-public ResponseEntity<Page<DadosListaCarro>> listar(@PageableDefault(size=15, sort = {"modelo"}) Pageable paginacao) {
-    var page = repository.findAllByAtivoTrue(paginacao).map(DadosListaCarro::new);
-
-    return ResponseEntity.ok(page);
-}
-
-@PutMapping("/editar/{id}")
-@Transactional
-public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DadosEditarCarro dados) {
-    var carro = repository.getReferenceById(id);
-    carro.atualizarInformacoes(dados);
-
-    return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
-}
-
-@DeleteMapping("/desativar/{id}")
-@Transactional
-public ResponseEntity desativar(@PathVariable Long id) {
-    var carro = repository.getReferenceById(id);
-    carro.desativar();
-
-    return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
-}
-
-@PatchMapping("/ativar/{id}")
-@Transactional
-public ResponseEntity ativar(@PathVariable Long id) {
-    var carro = repository.getReferenceById(id);
-    if(carro.getAtivo() != true){
-        carro.ativar();
-        return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoCarro(carro));
     }
-}
 
-@GetMapping("/buscar/{id}")
-public ResponseEntity buscar(@PathVariable Long id) {
-    var carro = repository.getReferenceById(id);
+    /**
+     * Endpoint para listar todos os carros ativos com paginação.
+     * @param paginacao Configurações de paginação.
+     * @return Resposta com a lista paginada de carros ativos.
+     */
+    @GetMapping("/listar")
+    public ResponseEntity<Page<DadosListaCarro>> listar(@PageableDefault(size=15, sort = {"modelo"}) Pageable paginacao) {
+        var page = repository.findAllByAtivoTrue(paginacao).map(DadosListaCarro::new);
 
-    return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
-}
+        return ResponseEntity.ok(page);
+    }
+
+    /**
+     * Endpoint para atualizar as informações de um carro existente.
+     * @param id ID do carro a ser atualizado.
+     * @param dados Novos dados para atualizar o carro.
+     * @return Resposta com os detalhes atualizados do carro.
+     */
+    @PutMapping("/editar/{id}")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoCarro> atualizar(@PathVariable Long id, @RequestBody @Valid DadosEditarCarro dados) {
+        var carro = repository.getReferenceById(id);
+        carro.atualizarInformacoes(dados);
+
+        return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
+    }
+
+    /**
+     * Endpoint para desativar um carro.
+     * @param id ID do carro a ser desativado.
+     * @return Resposta com os detalhes do carro desativado.
+     */
+    @DeleteMapping("/desativar/{id}")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoCarro> desativar(@PathVariable Long id) {
+        var carro = repository.getReferenceById(id);
+        carro.desativar();
+        repository.save(carro); // Salvando o carro desativado
+
+        return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
+    }
+
+    /**
+     * Endpoint para ativar um carro.
+     * @param id ID do carro a ser ativado.
+     * @return Resposta com os detalhes do carro ativado, ou um status 304 se o carro já estiver ativo.
+     */
+    @PatchMapping("/ativar/{id}")
+    @Transactional
+    public ResponseEntity<DadosDetalhamentoCarro> ativar(@PathVariable Long id) {
+        var carro = repository.getReferenceById(id);
+        if (!carro.getAtivo()) {
+            carro.ativar();
+            repository.save(carro); // Salvando o carro ativado
+            return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+    }
+
+    /**
+     * Endpoint para buscar um carro pelo ID.
+     * @param id ID do carro a ser buscado.
+     * @return Resposta com os detalhes do carro encontrado.
+     */
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<DadosDetalhamentoCarro> buscar(@PathVariable Long id) {
+        var carro = repository.getReferenceById(id);
+
+        return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
+    }
 }

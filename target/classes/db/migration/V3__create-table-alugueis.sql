@@ -1,7 +1,7 @@
 CREATE TABLE alugueis (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    dias_alugados INTEGER NOT NULL,
     data_inicio VARCHAR(10) NOT NULL,
+    data_termino VARCHAR(10) NOT NULL,
     ativo TINYINT,
     
     cliente_id BIGINT NOT NULL,

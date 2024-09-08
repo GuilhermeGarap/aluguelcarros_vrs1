@@ -12,20 +12,27 @@ Content-Type: application/json
 ### Buscar Aluguel
 GET http://localhost:8080/aluguel/buscar/10
 
-### Listar Alugueis
-GET http://localhost:8080/aluguel/listar
+### Listar Alugueis Ativos
+GET http://localhost:8080/aluguel/listarAtivos
+
+### Listar Alugueis Desativados
+GET http://localhost:8080/aluguel/listarDesativados
+
+### Listar Todos os Alugueis
+GET http://localhost:8080/aluguel/listarTodos
 
 ### Editar Aluguel
 POST http://localhost:8080/aluguel/editar/
 Content-Type: application/json
 
 {
-    "dias_alugados": 10,
-    "data_inicio": "30/01/2003"
+    "data_inicio": "30/01/2003",
+    "data_termino": "30/01/2003"
 }
 
-### Desativar Aluguel
-DELETE http://localhost:8080/aluguel/desativar/3
+### Devolver/desativar Aluguel
+DELETE http://localhost:8080/aluguel/desativar/2
 
 ### Ativar Aluguel
 PATCH http://localhost:8080/aluguel/ativar/1
+

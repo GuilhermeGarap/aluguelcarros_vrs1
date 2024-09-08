@@ -1,26 +1,28 @@
 package com.aluguelcarros_vrs1.domain.aluguel;
 
+import java.time.LocalDate;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public record DadosCadastroAluguel(
-    
-    @NotNull(message = "Indicar a quantidade de dias que o carro será alugado é obrigatório")
-    Integer dias_alugados, 
 
-    @NotBlank(message = "Indicar a data de inicio do aluguel é obrigatório")
-    @DateTimeFormat
-    String data_inicio,
+    @NotNull(message = "Indicar a data de início do aluguel é obrigatório")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Pattern(regexp= "\\d{2}\\-?\\d{2}\\-?\\d{4}")
+    LocalDate data_inicio,
+
+    @NotNull(message = "Indicar a data de término do aluguel é obrigatório")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @Pattern(regexp= "\\d{2}\\-?\\d{2}\\-?\\d{4}")
+    LocalDate data_termino,
 
     @NotNull(message = "É necessário vincular um cliente ao aluguel")
-    Long cliente_id,  
+    Long cliente_id,
 
     @NotNull(message = "É necessário vincular um carro ao aluguel")
-    Long carro_id 
+    Long carro_id
 
-
-) {
-    
-}
+) {}

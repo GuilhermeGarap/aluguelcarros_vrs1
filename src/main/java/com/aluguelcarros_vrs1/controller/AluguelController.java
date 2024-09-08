@@ -45,7 +45,12 @@ public class AluguelController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-
+    /**
+     * Cadastra um novo aluguel.
+     * @param dados Informações do aluguel a ser cadastrado.
+     * @param uriBuilder Construtor de URI para a localização do novo recurso.
+     * @return Resposta com o aluguel criado e o URI para acesso.
+     */
     @PostMapping("/cadastrar")
     @Transactional
     public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroAluguel dados, UriComponentsBuilder uriBuilder) {
@@ -59,10 +64,11 @@ public class AluguelController {
             throw new IllegalStateException("Não há carros disponíveis para este modelo.");
         }
     
-
+        // Atualiza a quantidade de carros disponíveis
         carro.setDisponivel(carro.getDisponivel() - 1);
         carroRepository.save(carro); 
     
+        // Cria e salva o novo aluguel
         var aluguel = new Aluguel(dados);
         aluguel.setCarro(carro);
         aluguel.setCliente(cliente);
@@ -74,47 +80,106 @@ public class AluguelController {
     }
     
 
-@GetMapping("/listar")
-public ResponseEntity<Page<DadosListaAluguel>> listar(@PageableDefault(size=10) Pageable paginacao) {
-    var page = repository.findAllByAtivoTrue(paginacao).map(DadosListaAluguel::new);
+    /**
+     * Lista todos os aluguéis ativos com paginação.
+     * @param paginacao Informações de paginação.
+     * @return Página com os aluguéis ativos.
+     */
+    @GetMapping("/listarAtivos")
+    public ResponseEntity<Page<DadosListaAluguel>> listarAtivos(@PageableDefault(size=10) Pageable paginacao) {
+        var page = repository.findAllByAtivoTrue(paginacao).map(DadosListaAluguel::new);
 
-    return ResponseEntity.ok(page);
-}
-
-@PutMapping("/editar/{id}")
-@Transactional
-public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DadosEditarAluguel dados) {
-    var aluguel = repository.getReferenceById(id);
-    aluguel.atualizarInformacoes(dados);
-
-    return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
-}
-
-@DeleteMapping("/desativar/{id}")
-@Transactional
-public ResponseEntity desativar(@PathVariable Long id) {
-    var aluguel = repository.getReferenceById(id);
-    aluguel.desativar();
-
-    return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
-}
-
-@PatchMapping("/ativar/{id}")
-@Transactional
-public ResponseEntity ativar(@PathVariable Long id) {
-    var aluguel = repository.getReferenceById(id);
-    if(aluguel.getAtivo() != true){
-        aluguel.ativar();
-        return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        return ResponseEntity.ok(page);
     }
-}
 
-@GetMapping("/buscar/{id}")
-public ResponseEntity buscar(@PathVariable Long id) {
-    var aluguel = repository.getReferenceById(id);
+    /**
+     * Lista todos os aluguéis desativados com paginação.
+     * @param paginacao Informações de paginação.
+     * @return Página com os aluguéis desativados.
+     */
+    @GetMapping("/listarDesativados")
+    public ResponseEntity<Page<DadosListaAluguel>> listarDesativados(@PageableDefault(size=10) Pageable paginacao) {
+        var page = repository.findAllByAtivoFalse(paginacao).map(DadosListaAluguel::new);
 
-    return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
-}
+        return ResponseEntity.ok(page);
+    }
+
+    /**
+     * Lista todos os aluguéis com paginação.
+     * @param paginacao Informações de paginação.
+     * @return Página com todos os aluguéis.
+     */
+    @GetMapping("/listarTodos")
+    public ResponseEntity<Page<DadosListaAluguel>> listarTodos(@PageableDefault(size=10) Pageable paginacao) {
+        var page = repository.findAll(paginacao).map(DadosListaAluguel::new);
+
+        return ResponseEntity.ok(page);
+    }
+
+    /**
+     * Atualiza as informações de um aluguel existente.
+     * @param id ID do aluguel a ser atualizado.
+     * @param dados Novas informações do aluguel.
+     * @return Resposta com as informações atualizadas do aluguel.
+     */
+    @PutMapping("/editar/{id}")
+    @Transactional
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DadosEditarAluguel dados) {
+        var aluguel = repository.getReferenceById(id);
+        aluguel.atualizarInformacoes(dados);
+
+        return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
+    }
+
+    /**
+     * Ativa um aluguel desativado.
+     * @param id ID do aluguel a ser ativado.
+     * @return Resposta com as informações do aluguel ativado ou uma resposta de não modificado.
+     */
+    @PatchMapping("/ativar/{id}")
+    @Transactional
+    public ResponseEntity ativar(@PathVariable Long id) {
+        var aluguel = repository.getReferenceById(id);
+        if (!aluguel.getAtivo()) {
+            aluguel.ativar();
+            return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+    }
+
+    /**
+     * Busca um aluguel pelo ID.
+     * @param id ID do aluguel a ser buscado.
+     * @return Resposta com as informações do aluguel.
+     */
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity buscar(@PathVariable Long id) {
+        var aluguel = repository.getReferenceById(id);
+
+        return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
+    }
+
+    /**
+     * Desativa um aluguel e incrementa a disponibilidade do carro associado.
+     * @param id ID do aluguel a ser desativado.
+     * @return Resposta com as informações do aluguel desativado.
+     */
+    @DeleteMapping("/desativar/{id}")
+    @Transactional
+    public ResponseEntity desativar(@PathVariable Long id) {
+        var aluguel = repository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Aluguel não encontrado com ID " + id));
+
+        // Incrementa a disponibilidade do carro
+        Carro carro = aluguel.getCarro();
+        carro.setDisponivel(carro.getDisponivel() + 1);
+        carroRepository.save(carro);
+
+        // Desativa o aluguel
+        aluguel.desativar();
+        repository.save(aluguel);
+
+        return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
+    }
 }
