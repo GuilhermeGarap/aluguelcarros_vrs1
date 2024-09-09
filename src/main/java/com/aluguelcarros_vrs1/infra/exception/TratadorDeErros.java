@@ -6,6 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
+
 import jakarta.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
@@ -20,6 +22,11 @@ public class TratadorDeErros {
     public ResponseEntity tratarErro400(MethodArgumentNotValidException exception) {
         var erros = exception.getFieldErrors();
         return ResponseEntity.badRequest().body(erros.stream().map(DadosErrosValidacao::new));
+    }
+
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity tratarErroRegraDeNegocio(ValidacaoException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
     public record DadosErrosValidacao(String campo, String mensagem) {

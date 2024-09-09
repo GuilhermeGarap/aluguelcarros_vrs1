@@ -5,9 +5,10 @@ Long id,
 String modelo,
 Float valor_dia,
 Integer unidades,
-Integer disponivel
+Integer disponivel,
+Boolean ativo
 ) {
     public DadosListaCarro(Carro carro){
-        this(carro.getId(), carro.getModelo(), carro.getValor_dia(), carro.getUnidades(), carro.getDisponivel());
+        this(carro.getId(), carro.getModelo(), carro.getValor_dia(), carro.getUnidades(), carro.getDisponivel(), carro.getAtivo());
     }
 }

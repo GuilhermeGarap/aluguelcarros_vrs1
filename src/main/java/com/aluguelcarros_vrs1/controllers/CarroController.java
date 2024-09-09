@@ -24,11 +24,13 @@ import com.aluguelcarros_vrs1.domain.carro.DadosDetalhamentoCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosEditarCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosListaCarro;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/carro")
+@SecurityRequirement(name = "bearer-key")
 public class CarroController {
 
     @Autowired

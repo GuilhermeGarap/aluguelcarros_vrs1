@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Table(name = "alugueis")
-@Entity(name = "aluguel")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
