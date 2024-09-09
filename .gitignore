@@ -45,3 +45,4 @@ application.yml
 *.jar
 *.war
 *.ear
+src/test/java/com/aluguelcarros_vrs1/login.http
