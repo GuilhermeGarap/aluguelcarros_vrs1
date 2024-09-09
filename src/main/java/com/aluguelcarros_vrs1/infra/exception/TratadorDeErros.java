@@ -1,4 +1,4 @@
-package com.aluguelcarros_vrs1.infra.expection;
+package com.aluguelcarros_vrs1.infra.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
