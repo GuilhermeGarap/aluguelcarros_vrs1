@@ -1,12 +1,8 @@
-create table carros(
-
-    id bigint not null auto_increment,
-    modelo varchar(100) not null unique,
-    valor_dia float not null,
-    unidades Integer not null,
-    ativo tinyint,
-    disponivel Integer,
-
-    primary key(id)
-
+CREATE TABLE carros (
+    id SERIAL PRIMARY KEY,
+    modelo VARCHAR(100) NOT NULL UNIQUE,
+    valor_dia FLOAT NOT NULL,
+    unidades INTEGER NOT NULL,
+    ativo BOOLEAN,  
+    disponivel INTEGER
 );
