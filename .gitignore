@@ -46,3 +46,6 @@ application.yml
 *.war
 *.ear
 src/test/java/com/aluguelcarros_vrs1/login.http
+src/test/java/com/aluguelcarros_vrs1/aluguel.http
+src/test/java/com/aluguelcarros_vrs1/carro.http
+src/test/java/com/aluguelcarros_vrs1/cliente.http

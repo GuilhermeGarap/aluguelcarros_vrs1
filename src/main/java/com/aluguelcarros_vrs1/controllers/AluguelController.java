@@ -1,9 +1,9 @@
 package com.aluguelcarros_vrs1.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,104 +22,80 @@ import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosDetalhamentoAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosEditarAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosListaAluguel;
-import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
-import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
 import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 import com.aluguelcarros_vrs1.domainservices.aluguelservices.AluguelService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/aluguel")
 @SecurityRequirement(name = "bearer-key")
+@Tag(name = " Aluguel", description = "Gerenciamento de aluguéis de carros")
 public class AluguelController {
     
     @Autowired
     private AluguelRepository repository;
 
     @Autowired
-    private CarroRepository carroRepository;
-
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
     private AluguelService aluguelService;
     
-    /**
-     * Cadastra um novo aluguel.
-     * @param dados Informações do aluguel a ser cadastrado.
-     * @param uriBuilder Construtor de URI para a localização do novo recurso.
-     * @return Resposta com o aluguel criado e o URI para acesso.
-     */
+    @Operation(summary = "Cadastra um novo aluguel", description = "Endpoint para registrar um novo aluguel de carro")
     @PostMapping("/cadastrar")
     @Transactional
-    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroAluguel dados) {
+    public ResponseEntity<DadosDetalhamentoAluguel> cadastrar(@RequestBody @Valid DadosCadastroAluguel dados) {
         var dto = aluguelService.cadastrar(dados);
         return ResponseEntity.ok(dto);
     }
 
-    /**
-     * Lista todos os aluguéis ativos com paginação.
-     * @param paginacao Informações de paginação.
-     * @return Página com os aluguéis ativos.
-     */
+    @Operation(summary = "Lista todos os aluguéis ativos", description = "Retorna uma lista de aluguéis ativos")
     @GetMapping("/listarAtivos")
-    public ResponseEntity<Page<DadosListaAluguel>> listarAtivos(@PageableDefault(size=10) Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(DadosListaAluguel::new);
-
-        return ResponseEntity.ok(page);
+    public ResponseEntity<List<DadosListaAluguel>> listarAtivos() {
+        List<Aluguel> alugueisAtivos = repository.findAllByAtivoTrue();  
+        List<DadosListaAluguel> dadosAlugueisAtivos = alugueisAtivos.stream()
+            .map(DadosListaAluguel::new) 
+            .collect(Collectors.toList());  
+        return ResponseEntity.ok(dadosAlugueisAtivos); 
     }
 
-    /**
-     * Lista todos os aluguéis desativados com paginação.
-     * @param paginacao Informações de paginação.
-     * @return Página com os aluguéis desativados.
-     */
+    @Operation(summary = "Lista todos os aluguéis desativados", description = "Retorna uma lista de aluguéis desativados")
     @GetMapping("/listarDesativados")
-    public ResponseEntity<Page<DadosListaAluguel>> listarDesativados(@PageableDefault(size=10) Pageable paginacao) {
-        var page = repository.findAllByAtivoFalse(paginacao).map(DadosListaAluguel::new);
-
-        return ResponseEntity.ok(page);
+    public ResponseEntity<List<DadosListaAluguel>> listarDesativados() {
+        List<Aluguel> alugueisDesativados = repository.findAllByAtivoFalse();  
+        List<DadosListaAluguel> dadosAlugueisDesativados = alugueisDesativados.stream()
+            .map(DadosListaAluguel::new) 
+            .collect(Collectors.toList());  
+        return ResponseEntity.ok(dadosAlugueisDesativados); 
     }
 
-    /**
-     * Lista todos os aluguéis com paginação.
-     * @param paginacao Informações de paginação.
-     * @return Página com todos os aluguéis.
-     */
+    @Operation(summary = "Lista todos os aluguéis", description = "Retorna uma lista de todos os aluguéis")
     @GetMapping("/listarTodos")
-    public ResponseEntity<Page<DadosListaAluguel>> listarTodos(@PageableDefault(size=10) Pageable paginacao) {
-        var page = repository.findAll(paginacao).map(DadosListaAluguel::new);
-
-        return ResponseEntity.ok(page);
+    public ResponseEntity<List<DadosListaAluguel>> listarTodos() {
+        List<Aluguel> todosAlugueis = repository.findAll();  
+        List<DadosListaAluguel> dadosTodosAlugueis = todosAlugueis.stream()
+            .map(DadosListaAluguel::new) 
+            .collect(Collectors.toList());  
+        return ResponseEntity.ok(dadosTodosAlugueis); 
     }
 
-    /**
-     * Atualiza as informações de um aluguel existente.
-     * @param id ID do aluguel a ser atualizado.
-     * @param dados Novas informações do aluguel.
-     * @return Resposta com as informações atualizadas do aluguel.
-     */
+
+
+    @Operation(summary = "Atualiza um aluguel", description = "Atualiza as informações de um aluguel existente")
     @PutMapping("/editar/{id}")
     @Transactional
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DadosEditarAluguel dados) {
+    public ResponseEntity<DadosDetalhamentoAluguel> atualizar(@PathVariable Long id, @RequestBody DadosEditarAluguel dados) {
         var aluguel = repository.getReferenceById(id);
         aluguel.atualizarInformacoes(dados);
-
         return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
     }
 
-    /**
-     * Ativa um aluguel desativado.
-     * @param id ID do aluguel a ser ativado.
-     * @return Resposta com as informações do aluguel ativado ou uma resposta de não modificado.
-     */
+    @Operation(summary = "Ativa um aluguel", description = "Ativa um aluguel desativado")
     @PatchMapping("/ativar/{id}")
     @Transactional
-    public ResponseEntity ativar(@PathVariable Long id) {
+    public ResponseEntity<DadosDetalhamentoAluguel> ativar(@PathVariable Long id) {
         var aluguel = repository.getReferenceById(id);
         if (!aluguel.getAtivo()) {
             aluguel.ativar();
@@ -129,25 +105,16 @@ public class AluguelController {
         }
     }
 
-    /**
-     * Busca um aluguel pelo ID.
-     * @param id ID do aluguel a ser buscado.
-     * @return Resposta com as informações do aluguel.
-     */
+    @Operation(summary = "Busca um aluguel pelo ID", description = "Retorna um aluguel com base no ID fornecido")
     @GetMapping("/buscar/{id}")
-    public ResponseEntity buscar(@PathVariable Long id) {
+    public ResponseEntity<DadosDetalhamentoAluguel> buscar(@PathVariable Long id) {
         var aluguel = repository.getReferenceById(id);
-
         return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
     }
 
-    /**
-     * Desativa um aluguel e incrementa a disponibilidade do carro associado.
-     * @param id ID do aluguel a ser desativado.
-     * @return Resposta com as informações do aluguel desativado.
-     */
+    @Operation(summary = "Desativa um aluguel", description = "Desativa um aluguel e incrementa a disponibilidade do carro associado")
     @DeleteMapping("/desativar/{id}")
-    public ResponseEntity desativar(@PathVariable Long id) {
+    public ResponseEntity<Object> desativar(@PathVariable Long id) {
         try {
             Aluguel aluguel = aluguelService.desativarAluguel(id);
             return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
@@ -156,4 +123,3 @@ public class AluguelController {
         }
     }
 }
-

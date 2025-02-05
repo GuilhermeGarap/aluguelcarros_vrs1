@@ -1,10 +1,9 @@
-
 package com.aluguelcarros_vrs1.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,24 +24,22 @@ import com.aluguelcarros_vrs1.domain.cliente.DadosDetalhamentoCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosEditarCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosListaCliente;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/cliente")
 @SecurityRequirement(name = "bearer-key")
+@Tag(name = "Clientes", description = "Endpoints para gerenciar clientes")
 public class ClienteController {
 
     @Autowired
     private ClienteRepository repository;
 
-    /**
-     * Endpoint para cadastrar um novo cliente.
-     * @param dados Dados do cliente a ser cadastrado.
-     * @param uriBuilder Utilizado para construir a URI do novo recurso.
-     * @return Resposta com os detalhes do cliente cadastrado e a URI do recurso.
-     */
+    @Operation(summary = "Cadastra um novo cliente", description = "Endpoint para registrar um novo cliente")
     @PostMapping("/cadastrar")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> cadastrar(@RequestBody @Valid DadosCadastroCliente dados, UriComponentsBuilder uriBuilder) {
@@ -55,23 +52,17 @@ public class ClienteController {
         return ResponseEntity.created(uri).body(new DadosDetalhamentoCliente(cliente));
     }
 
-    /**
-     * Endpoint para listar todos os clientes ativos com paginação.
-     * @param paginacao Configurações de paginação.
-     * @return Resposta com a lista paginada de clientes ativos.
-     */
+    @Operation(summary = "Lista todos os clientes ativos", description = "Endpoint para listar todos os clientes ativos sem paginação")
     @GetMapping("/listar")
-    public ResponseEntity<Page<DadosListaCliente>> listar(@PageableDefault(size=15, sort = {"nome"}) Pageable paginacao) {
-        var page = repository.findAllByAtivoTrue(paginacao).map(DadosListaCliente::new);
-        return ResponseEntity.ok(page);
+    public ResponseEntity<List<DadosListaCliente>> listar() {
+        List<DadosListaCliente> clientesAtivos = repository.findAllByAtivoTrue()
+            .stream()
+            .map(DadosListaCliente::new) 
+            .collect(Collectors.toList()); 
+        return ResponseEntity.ok(clientesAtivos);
     }
 
-    /**
-     * Endpoint para atualizar as informações de um cliente existente.
-     * @param id ID do cliente a ser atualizado.
-     * @param dados Novos dados para atualizar o cliente.
-     * @return Resposta com os detalhes atualizados do cliente.
-     */
+    @Operation(summary = "Atualiza um cliente", description = "Endpoint para atualizar as informações de um cliente existente")
     @PutMapping("/editar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> atualizar(@PathVariable Long id, @RequestBody @Valid DadosEditarCliente dados) {
@@ -81,11 +72,7 @@ public class ClienteController {
         return ResponseEntity.ok(new DadosDetalhamentoCliente(cliente));
     }
 
-    /**
-     * Endpoint para desativar um cliente.
-     * @param id ID do cliente a ser desativado.
-     * @return Resposta com os detalhes do cliente desativado.
-     */
+    @Operation(summary = "Desativa um cliente", description = "Endpoint para desativar um cliente")
     @DeleteMapping("/desativar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> desativar(@PathVariable Long id) {
@@ -96,11 +83,7 @@ public class ClienteController {
         return ResponseEntity.ok(new DadosDetalhamentoCliente(cliente));
     }
 
-    /**
-     * Endpoint para ativar um cliente.
-     * @param id ID do cliente a ser ativado.
-     * @return Resposta com os detalhes do cliente ativado, ou um status 304 se o cliente já estiver ativo.
-     */
+    @Operation(summary = "Ativa um cliente", description = "Endpoint para ativar um cliente")
     @PatchMapping("/ativar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> ativar(@PathVariable Long id) {
@@ -114,11 +97,7 @@ public class ClienteController {
         }
     }
 
-    /**
-     * Endpoint para buscar um cliente pelo ID.
-     * @param id ID do cliente a ser buscado.
-     * @return Resposta com os detalhes do cliente encontrado.
-     */
+    @Operation(summary = "Busca um cliente pelo ID", description = "Endpoint para buscar um cliente pelo ID")
     @GetMapping("/buscar/{id}")
     public ResponseEntity<DadosDetalhamentoCliente> buscar(@PathVariable Long id) {
         var cliente = repository.getReferenceById(id);

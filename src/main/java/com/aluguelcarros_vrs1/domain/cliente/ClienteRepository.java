@@ -1,18 +1,18 @@
 package com.aluguelcarros_vrs1.domain.cliente;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface ClienteRepository extends JpaRepository<Cliente, Long>{
-    
-    Page<Cliente> findAllByAtivoTrue(Pageable paginacao);
+public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-        @Query("""
+    List<Cliente> findAllByAtivoTrue();
+
+    @Query("""
         SELECT c.ativo 
         FROM Cliente c 
         WHERE c.id = :id
-        """)
+    """)
     Boolean findAtivoById(Long id);
 }

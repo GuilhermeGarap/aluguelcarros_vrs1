@@ -14,10 +14,13 @@ import com.aluguelcarros_vrs1.domain.usuario.Usuario;
 import com.aluguelcarros_vrs1.infra.security.DadosTokenJWT;
 import com.aluguelcarros_vrs1.infra.security.TokenService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/autenticacao")
+@Tag(name = " 1/Autenticação", description = "Endpoints para autenticação de usuários")
 public class AutenticacaoController {
 
     @Autowired
@@ -26,11 +29,8 @@ public class AutenticacaoController {
     @Autowired
     private TokenService tokenService;
     
-    /**
-     * Endpoint para realizar login de um usuário.
-     * @param dados Dados de autenticação (login e senha) do usuário.
-     * @return Resposta com o token JWT gerado para o usuário.
-     */
+    
+    @Operation(summary = "Realiza login de um usuário", description = "Autentica um usuário e retorna um token JWT válido. Para utilizar os demais endpoints, é necessário informar o token JWT no botão 'Authorize' logo na parte inicial dessa página do Swagger. Login para testes: logintestes@hotmail.com, senha: senhatestes")
     @PostMapping("/login")
     public ResponseEntity<DadosTokenJWT> efetuarLogin(@RequestBody @Valid DadosAutenticacao dados) {
         // Cria um token de autenticação com as credenciais fornecidas
