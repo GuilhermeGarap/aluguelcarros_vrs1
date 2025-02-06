@@ -36,10 +36,6 @@ Thumbs.db
 # Logs
 *.log
 
-# Application-specific
-application.properties
-application.yml
-
 # Other
 *.class
 *.jar
