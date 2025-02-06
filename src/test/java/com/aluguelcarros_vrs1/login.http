@@ -1,0 +1,8 @@
+### Efetuar Login
+POST http://localhost:8080/autenticacao/login
+Content-Type: application/json
+
+{
+    "login": "ana.souza@voll.med",
+    "senha": "123456"
+}

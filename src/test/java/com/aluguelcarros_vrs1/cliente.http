@@ -1,0 +1,53 @@
+### Cadastrar Cliente
+POST http://localhost:8080/cliente/cadastrar
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmEuc291emFAdm9sbC5tZWQiLCJpc3MiOiJBUEkgQWx1Z3VlbCBDYXJyb3MiLCJleHAiOjE3MjU5MDMxMzB9.-BIZYq583qDt-oWHsloEqL4EviH0A_9VEezoG3HT3k8
+
+
+{
+"nome": "Guilherme Garanhani Pereiras",
+"email": "guilhermegarap@gmail.coms",
+"telefone": "45999954704",
+"cpf": "102.178.759-01",
+"endereco": {
+    "logradouro": "Rua Piratininga",
+    "numero": "194",
+    "bairro": "Centro",
+    "cep": "83255-000",
+    "cidade": "Balneário de Ipanema",
+    "uf": "PR"
+    }
+}
+
+### Buscar Cliente
+GET http://localhost:8080/cliente/buscar/1
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmEuc291emFAdm9sbC5tZWQiLCJpc3MiOiJBUEkgQWx1Z3VlbCBDYXJyb3MiLCJleHAiOjE3MjU5MDMxMzB9.-BIZYq583qDt-oWHsloEqL4EviH0A_9VEezoG3HT3k8
+
+### Listar Cliente
+GET http://localhost:8080/cliente/listar
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmEuc291emFAdm9sbC5tZWQiLCJpc3MiOiJBUEkgQWx1Z3VlbCBDYXJyb3MiLCJleHAiOjE3MjU5MTU0Nzh9.5dRTNFUekw6iDdwZHatt59tHrcNI4N381HEM4XAfv3U
+### Editar Cliente
+PUT http://localhost:8080/cliente/editar/3
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmEuc291emFAdm9sbC5tZWQiLCJpc3MiOiJBUEkgQWx1Z3VlbCBDYXJyb3MiLCJleHAiOjE3MjU4NTExMzN9.eQUF8oAWj4GXk8uJaAr06_Gj26wEW_k0mN6c1qZ8Xts
+
+{
+"nome": "Graziela Garanhani",
+"telefone": "45999954704",
+"endereco": {
+    "logradouro": "Rua Piratininga",
+    "numero": "194",
+    "bairro": "Centro",
+    "cep": "83255-000",
+    "cidade": "Balneário de Ipanema",
+    "uf": "PR"
+    }
+}
+
+### Desativar Cliente
+DELETE http://localhost:8080/cliente/desativar/3
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmEuc291emFAdm9sbC5tZWQiLCJpc3MiOiJBUEkgQWx1Z3VlbCBDYXJyb3MiLCJleHAiOjE3MjU4NTExMzN9.eQUF8oAWj4GXk8uJaAr06_Gj26wEW_k0mN6c1qZ8Xts
+
+### Ativar Cliente
+PATCH http://localhost:8080/cliente/ativar/3
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmEuc291emFAdm9sbC5tZWQiLCJpc3MiOiJBUEkgQWx1Z3VlbCBDYXJyb3MiLCJleHAiOjE3MjU4NTExMzN9.eQUF8oAWj4GXk8uJaAr06_Gj26wEW_k0mN6c1qZ8Xts
