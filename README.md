@@ -78,7 +78,7 @@ Sistema completo de gerenciamento de aluguel de carros desenvolvido em Java com 
 
 1. **Clone o repositório**
    ```bash
-   git clone [https://github.com/seu-usuario/aluguelcarros-api.git](https://github.com/GuilhermeGarap/aluguelcarros_vrs1.git)
+   git clone [https://github.com/GuilhermeGarap/aluguelcarros_vrs1.git
    cd aluguelcarros-api
    ```
 
