@@ -1,0 +1,591 @@
+{
+  "info": {
+    "name": "Aluguel de Carros API",
+    "description": "Coleção completa de testes para a API de Aluguel de Carros",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticacao",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login\": \"logintestes@hotmail.com\",\n  \"senha\": \"senhatestes\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/autenticacao/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "autenticacao",
+                "login"
+              ]
+            },
+            "description": "Realiza login e retorna um token JWT. Copie o token retornado e use no campo 'token' das variáveis para autenticar as próximas requisições."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Cadastrar Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Silva\",\n  \"email\": \"joao.silva@email.com\",\n  \"telefone\": \"11987654321\",\n  \"cpf\": \"123.456.789-00\",\n  \"endereco\": {\n    \"logradouro\": \"Avenida Paulista\",\n    \"numero\": \"1000\",\n    \"bairro\": \"Centro\",\n    \"complemento\": \"Apto 101\",\n    \"cep\": \"01310-100\",\n    \"cidade\": \"São Paulo\",\n    \"uf\": \"SP\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cliente/cadastrar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "cadastrar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Clientes Ativos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente/listar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "listar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente/buscar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "buscar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Cliente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Silva Atualizado\",\n  \"email\": \"joao.silva.novo@email.com\",\n  \"telefone\": \"11999999999\",\n  \"endereco\": {\n    \"logradouro\": \"Rua Nova\",\n    \"numero\": \"2000\",\n    \"bairro\": \"Vila Mariana\",\n    \"complemento\": \"Apto 202\",\n    \"cep\": \"04011-002\",\n    \"cidade\": \"São Paulo\",\n    \"uf\": \"SP\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cliente/editar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "editar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desativar Cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente/desativar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "desativar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ativar Cliente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cliente/ativar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cliente",
+                "ativar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Carros",
+      "item": [
+        {
+          "name": "Cadastrar Carro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelo\": \"Toyota Corolla\",\n  \"valor_dia\": 150.00,\n  \"unidades\": 3\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carro/cadastrar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carro",
+                "cadastrar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Carros Ativos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/carro/listar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carro",
+                "listar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Carro por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/carro/buscar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carro",
+                "buscar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Carro",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modelo\": \"Toyota Corolla 2024\",\n  \"valor_dia\": 180.00,\n  \"unidades\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/carro/editar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carro",
+                "editar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desativar Carro",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/carro/desativar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carro",
+                "desativar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Ativar Carro",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/carro/ativar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "carro",
+                "ativar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Alugueis",
+      "item": [
+        {
+          "name": "Cadastrar Aluguel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data_inicio\": \"20/01/2026\",\n  \"data_termino\": \"25/01/2026\",\n  \"cliente_id\": 1,\n  \"carro_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/aluguel/cadastrar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aluguel",
+                "cadastrar"
+              ]
+            },
+            "description": "Cria um novo aluguel. Cliente não pode ter outro aluguel ativo e não pode alugar nos domingos."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Aluguéis Ativos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/aluguel/listarAtivos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aluguel",
+                "listarAtivos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Aluguéis Desativados",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/aluguel/listarDesativados",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aluguel",
+                "listarDesativados"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Todos os Aluguéis",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/aluguel/listarTodos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aluguel",
+                "listarTodos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Aluguel por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/aluguel/buscar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aluguel",
+                "buscar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar Aluguel",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data_inicio\": \"20/01/2026\",\n  \"data_termino\": \"28/01/2026\",\n  \"cliente_id\": 1,\n  \"carro_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/aluguel/editar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aluguel",
+                "editar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desativar Aluguel",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/aluguel/desativar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aluguel",
+                "desativar",
+                "1"
+              ]
+            },
+            "description": "Desativa um aluguel e incrementa a disponibilidade do carro associado"
+          },
+          "response": []
+        },
+        {
+          "name": "Ativar Aluguel",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/aluguel/ativar/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "aluguel",
+                "ativar",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
