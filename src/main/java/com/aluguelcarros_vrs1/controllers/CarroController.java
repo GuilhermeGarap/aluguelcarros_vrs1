@@ -114,7 +114,7 @@ public class CarroController {
     @Transactional
     public ResponseEntity<DadosDetalhamentoCarro> ativar(@PathVariable Long id) {
         var carro = repository.getReferenceById(id);
-        if (!carro.getAtivo()) {
+        if (carro.getAtivo() == false) {
             carro.ativar();
             repository.save(carro);
             return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));

@@ -10,6 +10,7 @@ import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 @Component
 public class AluguelValidadorData implements AluguelValidador{
     
+    @Override
     public void validar(DadosCadastroAluguel dados) {
     // Verifica se qualquer uma das datas é um domingo
     boolean domingo = dados.data_inicio().getDayOfWeek().equals(DayOfWeek.SUNDAY) ||

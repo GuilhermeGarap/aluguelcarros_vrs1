@@ -1,5 +1,8 @@
 package com.aluguelcarros_vrs1.domain.cliente;
 
+import java.util.List;
+import java.util.Objects;
+
 import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
 import com.aluguelcarros_vrs1.domain.endereco.Endereco;
 
@@ -10,21 +13,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Table(name="clientes")
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class Cliente {
     
     @Id
@@ -36,11 +30,15 @@ public class Cliente {
     private String cpf;
     private Endereco endereco;
     private Boolean ativo;
-
-    @OneToOne(mappedBy= "cliente", cascade = CascadeType.ALL)
-    private Aluguel aluguel;
     
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private List<Aluguel> alugueis;
+    
+    public Cliente () {
 
+    }
+
+    
     public Cliente(DadosCadastroCliente dados) {
         this.nome = dados.nome();
         this.email = dados.email();
@@ -48,6 +46,80 @@ public class Cliente {
         this.cpf = dados.cpf();
         this.endereco = new Endereco(dados.endereco());
         this.ativo = true;
+    }
+
+    public Cliente(Boolean ativo, String cpf, String email, Endereco endereco, Long id, String nome, String telefone) {
+        this.ativo = ativo;
+        this.cpf = cpf;
+        this.email = email;
+        this.endereco = endereco;
+        this.id = id;
+        this.nome = nome;
+        this.telefone = telefone;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public List<Aluguel> getAlugueis() {
+        return alugueis;
+    }
+
+    public void setAlugueis(List<Aluguel> alugueis) {
+        this.alugueis = alugueis;
     }
 
 
@@ -81,4 +153,30 @@ public class Cliente {
         return false;
     }
 }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 23 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Cliente other = (Cliente) obj;
+        return Objects.equals(this.id, other.id);
+    }
+
+    
+
+
 }

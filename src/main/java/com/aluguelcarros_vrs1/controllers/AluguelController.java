@@ -97,7 +97,7 @@ public class AluguelController {
     @Transactional
     public ResponseEntity<DadosDetalhamentoAluguel> ativar(@PathVariable Long id) {
         var aluguel = repository.getReferenceById(id);
-        if (!aluguel.getAtivo()) {
+        if (aluguel.getAtivo() == false) {
             aluguel.ativar();
             return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
         } else {

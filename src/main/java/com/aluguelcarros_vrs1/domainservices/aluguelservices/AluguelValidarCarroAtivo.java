@@ -13,6 +13,7 @@ public class AluguelValidarCarroAtivo implements AluguelValidador {
     @Autowired
     private CarroRepository repository;
 
+    @Override
     public void validar(DadosCadastroAluguel dados) {
         var carroAtivo = repository.findAtivoById(dados.carro_id());
         if (!carroAtivo) {

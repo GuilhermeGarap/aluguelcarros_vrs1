@@ -11,19 +11,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 @Table(name = "carros")
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class Carro {
     
     @Id
@@ -39,6 +30,10 @@ public class Carro {
     @OneToMany(mappedBy = "carro", cascade = CascadeType.ALL)
     private List<Aluguel> alugueis;  // Mudei de @OneToOne para @OneToMany
 
+    public Carro() {
+
+    }
+    
     public Carro(DadosCadastroCarro dados) {
         this.modelo = dados.modelo();
         this.valor_dia = dados.valor_dia();
@@ -46,7 +41,73 @@ public class Carro {
         this.ativo = true;
         this.disponivel = dados.unidades();
     }
-    
+
+    public Carro(List<Aluguel> alugueis, Boolean ativo, Integer disponivel, Long id, String modelo, Integer unidades, Float valor_dia) {
+        this.alugueis = alugueis;
+        this.ativo = ativo;
+        this.disponivel = disponivel;
+        this.id = id;
+        this.modelo = modelo;
+        this.unidades = unidades;
+        this.valor_dia = valor_dia;
+    }
+
+     public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public Float getValor_dia() {
+        return valor_dia;
+    }
+
+    public void setValor_dia(Float valor_dia) {
+        this.valor_dia = valor_dia;
+    }
+
+    public Integer getUnidades() {
+        return unidades;
+    }
+
+    public void setUnidades(Integer unidades) {
+        this.unidades = unidades;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Integer getDisponivel() {
+        return disponivel;
+    }
+
+    public void setDisponivel(Integer disponivel) {
+        this.disponivel = disponivel;
+    }
+
+    public List<Aluguel> getAlugueis() {
+        return alugueis;
+    }
+
+    public void setAlugueis(List<Aluguel> alugueis) {
+        this.alugueis = alugueis;
+    }
+
     public void atualizarInformacoes(DadosEditarCarro dados) {
         if (dados.modelo() != null) {
             this.modelo = dados.modelo();
@@ -75,4 +136,32 @@ public class Carro {
     public void ativar(){
         this.ativo = true;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Carro other = (Carro) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
+    
+
 }

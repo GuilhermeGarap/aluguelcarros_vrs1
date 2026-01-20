@@ -13,6 +13,7 @@ public class AluguelValidarClienteAtivo implements AluguelValidador {
     @Autowired
     private ClienteRepository repository;
 
+    @Override
     public void validar(DadosCadastroAluguel dados) {
         var clienteAtivo = repository.findAtivoById(dados.cliente_id());
         System.out.println("Verificando se o cliente está ativo: " + clienteAtivo);
