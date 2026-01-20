@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.AluguelRepository;
@@ -17,6 +18,8 @@ import com.aluguelcarros_vrs1.domain.cliente.Cliente;
 import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
 import com.aluguelcarros_vrs1.domain.cliente.DadosCadastroCliente;
 import com.aluguelcarros_vrs1.domain.endereco.DadosEndereco;
+import com.aluguelcarros_vrs1.domain.usuario.Usuario;
+import com.aluguelcarros_vrs1.domain.usuario.UsuarioRepository;
 
 @Configuration
 @Profile("test")
@@ -31,9 +34,26 @@ public class TestConfig implements CommandLineRunner{
     @Autowired
     private AluguelRepository aluguelRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     @SuppressWarnings("null")
     public void run(String... args) throws Exception {
+        // Criando usuários de teste
+        Usuario usuario1 = new Usuario();
+        usuario1.setLogin("logintestes@hotmail.com");
+        usuario1.setSenha(passwordEncoder.encode("senhatestes"));
+        usuarioRepository.save(usuario1);
+
+        Usuario usuario2 = new Usuario();
+        usuario2.setLogin("admin@aluguelcarros.com");
+        usuario2.setSenha(passwordEncoder.encode("admin123"));
+        usuarioRepository.save(usuario2);
+
         // Criando carros de teste usando DTO
         DadosCadastroCarro dados1 = new DadosCadastroCarro("Toyota Corolla", 150.0f, 3);
         DadosCadastroCarro dados2 = new DadosCadastroCarro("Honda Civic", 140.0f, 2);

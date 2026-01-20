@@ -45,4 +45,5 @@ public class AutenticacaoController {
         // Retorna a resposta com o token JWT
         return ResponseEntity.ok(new DadosTokenJWT(tokenJWT));
     }
+    
 }
