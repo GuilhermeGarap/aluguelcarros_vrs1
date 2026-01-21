@@ -34,9 +34,6 @@ public class AluguelService {
     private ClienteRepository clienteRepository;
 
     @Autowired
-    private AluguelLogicaCarroDisponivel logica;
-
-    @Autowired
     private List<AluguelValidador> validadores;
 
     // Agendar para rodar todos os dias às 13:00 (horário de Brasília)
@@ -69,12 +66,12 @@ public class AluguelService {
             throw new ValidacaoException("ID do Carro informado não existe!");
         }
         var cliente = clienteRepository.getReferenceById(dados.cliente_id());
+        var carro = carroRepository.getReferenceById(dados.carro_id());
         
-        var carro = logica.validar(dados);
         validadores.forEach(v -> v.validar(dados));
 
         var aluguel = new Aluguel(null, dados.data_inicio(), dados.data_termino(), true , cliente, carro);
-        aluguelRepository.save(aluguel);
+        aluguelRepository.save( aluguel);
         return new DadosDetalhamentoAluguel(aluguel);
     }
 
