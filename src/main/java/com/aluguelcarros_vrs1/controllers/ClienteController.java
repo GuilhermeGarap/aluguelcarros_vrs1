@@ -3,6 +3,7 @@ package com.aluguelcarros_vrs1.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,9 @@ public class ClienteController {
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> cadastrar(@RequestBody @Valid DadosCadastroCliente dados, UriComponentsBuilder uriBuilder) {
         var cliente = new Cliente(dados);
-        cliente.verificadorCpf(cliente.getCpf());
+        if (!cliente.verificadorCpf(cliente.getCpf())) {
+            throw new ValidacaoException("CPF Inválido!");
+        }
         repository.save(cliente);
 
         var uri = uriBuilder.path("/cliente/cadastrar/{id}").buildAndExpand(cliente.getId()).toUri();

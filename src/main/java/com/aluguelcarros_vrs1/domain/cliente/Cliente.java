@@ -48,6 +48,15 @@ public class Cliente {
         this.ativo = true;
     }
 
+    public Cliente(String nome, String telefone, String email, String cpf, Endereco endereco, Boolean ativo) {
+        this.nome = nome;
+        this.telefone = telefone;
+        this.email = email;
+        this.cpf = cpf;
+        this.endereco = endereco;
+        this.ativo = ativo;
+    }
+
     public Cliente(Boolean ativo, String cpf, String email, Endereco endereco, Long id, String nome, String telefone) {
         this.ativo = ativo;
         this.cpf = cpf;
@@ -57,6 +66,8 @@ public class Cliente {
         this.nome = nome;
         this.telefone = telefone;
     }
+
+
 
     public Long getId() {
         return id;

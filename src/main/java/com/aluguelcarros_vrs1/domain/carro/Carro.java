@@ -42,6 +42,14 @@ public class Carro {
         this.disponivel = dados.unidades();
     }
 
+    public Carro(String modelo, Float valor_dia, Integer unidades, Boolean ativo, Integer disponivel) {
+        this.modelo = modelo;
+        this.valor_dia = valor_dia;
+        this.unidades = unidades;
+        this.ativo = ativo;
+        this.disponivel = disponivel;
+    }
+
     public Carro(List<Aluguel> alugueis, Boolean ativo, Integer disponivel, Long id, String modelo, Integer unidades, Float valor_dia) {
         this.alugueis = alugueis;
         this.ativo = ativo;
