@@ -55,6 +55,14 @@ public class Aluguel {
         this.ativo = true;
     }
 
+    public Aluguel(LocalDate data_inicio, LocalDate data_termino, Boolean ativo, Cliente cliente, Carro carro) {
+        this.data_inicio = data_inicio;
+        this.data_termino = data_termino;
+        this.ativo = ativo;
+        this.cliente = cliente;
+        this.carro = carro;
+    }
+
     public Long getId() {
         return id;
     }
