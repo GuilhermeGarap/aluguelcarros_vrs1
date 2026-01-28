@@ -1,6 +1,7 @@
 package com.aluguelcarros_vrs1.domain.cliente;
 
 import com.aluguelcarros_vrs1.domain.endereco.Endereco;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,11 +16,18 @@ class ClienteRepositoryTest {
     @Autowired
     private ClienteRepository repository;
 
+    Endereco dadosEnd1;
+    Cliente cliente;
+
+    @BeforeEach
+    void setup() {
+        dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
+        cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
+    }
+
     @Test
     void testGivenClientObject_WhenSave_ThenReturnSavedCliente() {
         //Given
-        Endereco dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
 
         //When
         Cliente clienteSalvo = repository.save(cliente);
@@ -33,16 +41,12 @@ class ClienteRepositoryTest {
     @Test
     void testGivenClientList_whenFindAllByAtivoTrue_thenReturnClienteListWithOnlyActive() {
         //Given
-        Endereco dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
-
         Endereco dadosEnd2 = new Endereco("Rua Vergueiro", "2500", "Vila Mariana", "Apto 205", "04011-002", "São Paulo", "SP");
         Cliente cliente2 = new Cliente("Maria Santos", "maria@email.com", "11987654322", "123.456.789-01", dadosEnd2, false);;
         repository.save(cliente);
         repository.save(cliente2);
 
         //When
-
         List<Cliente> listaClientes = repository.findAllByAtivoTrue();
 
 
@@ -54,9 +58,6 @@ class ClienteRepositoryTest {
     @Test
     void testGivenClientId_whenFindById_thenReturnClienteOfThatId() {
         //Given
-        Endereco dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
-
         repository.save(cliente);
 
         //When
@@ -71,16 +72,12 @@ class ClienteRepositoryTest {
     @Test
     void testGivenClientList_whenFindAll_thenReturnClienteList() {
         //Given
-        Endereco dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
-
         Endereco dadosEnd2 = new Endereco("Rua Vergueiro", "2500", "Vila Mariana", "Apto 205", "04011-002", "São Paulo", "SP");
         Cliente cliente2 = new Cliente("Maria Santos", "maria@email.com", "11987654322", "123.456.789-01", dadosEnd2, true);;
         repository.save(cliente);
         repository.save(cliente2);
 
         //When
-
         List<Cliente> listaClientes = repository.findAll();
 
         //Then

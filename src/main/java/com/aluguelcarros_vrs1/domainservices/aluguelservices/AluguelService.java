@@ -3,6 +3,7 @@ package com.aluguelcarros_vrs1.domainservices.aluguelservices;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,6 +14,8 @@ import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.AluguelRepository;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosDetalhamentoAluguel;
+import com.aluguelcarros_vrs1.domain.aluguel.DadosEditarAluguel;
+import com.aluguelcarros_vrs1.domain.aluguel.DadosListaAluguel;
 import com.aluguelcarros_vrs1.domain.carro.Carro;
 import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
 import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
@@ -50,7 +53,7 @@ public class AluguelService {
             LocalDateTime termino = aluguel.getData_termino().atTime(13, 0);
             if (termino.isBefore(agora) || termino.isEqual(agora)) {
                 aluguel.desativar();
-                aluguelRepository.save(aluguel); // Desativa o aluguel e salva no banco
+                aluguelRepository.save(aluguel);
             }
         }
     }
@@ -76,7 +79,7 @@ public class AluguelService {
     }
 
     @Transactional
-    public Aluguel desativarAluguel(Long id) {
+    public DadosDetalhamentoAluguel desativarAluguel(Long id) {
         Aluguel aluguel = aluguelRepository.findById(id)
             .orElseThrow(() -> new ValidacaoException("Aluguel não encontrado com ID " + id));
 
@@ -93,6 +96,48 @@ public class AluguelService {
         aluguel.desativar();
         aluguelRepository.save(aluguel);
 
+        return new DadosDetalhamentoAluguel(aluguel);
+    }
+
+    public List<DadosListaAluguel> listarAtivos() {
+        List<Aluguel> alugueisAtivos = aluguelRepository.findAllByAtivoTrue();
+        return  alugueisAtivos.stream()
+                .map(DadosListaAluguel::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<DadosListaAluguel> listarDesativados() {
+        List<Aluguel> alugueisDesativados = aluguelRepository.findAllByAtivoFalse();
+        return alugueisDesativados.stream()
+                .map(DadosListaAluguel::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<DadosListaAluguel> listarTodos() {
+        List<Aluguel> todosAlugueis = aluguelRepository.findAll();
+        return todosAlugueis.stream()
+                .map(DadosListaAluguel::new)
+                .collect(Collectors.toList());
+    }
+
+    public Aluguel atualizar(Long id, DadosEditarAluguel dados) {
+        var aluguel = aluguelRepository.getReferenceById(id);
+        aluguel.atualizarInformacoes(dados);
         return aluguel;
+    }
+
+    @Transactional
+    public DadosDetalhamentoAluguel ativar(Long id) {
+        var aluguel = aluguelRepository.getReferenceById(id);
+        if (aluguel.getAtivo() == false) {
+            aluguel.ativar();
+            return new DadosDetalhamentoAluguel(aluguel);
+        }
+        return null;
+    }
+
+    public DadosDetalhamentoAluguel buscar(Long id) {
+        var aluguel = aluguelRepository.getReferenceById(id);
+        return new DadosDetalhamentoAluguel(aluguel);
     }
 }

@@ -1,5 +1,6 @@
 package com.aluguelcarros_vrs1.domain.carro;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,10 +15,16 @@ class CarroRepositoryTest {
     @Autowired
     CarroRepository repository;
 
+    Carro carro;
+
+    @BeforeEach
+    void setup() {
+        carro = new Carro("Fiat", 25F, 3, true, 2);
+    }
+
     @Test
     void GivenCarroObject_whenRepositorySave_thenReturnSavedCliente() {
         //Given
-        Carro carro = new Carro("Fiat", 25F, 3, true, 2);
 
         //When
         Carro carroSalvo = repository.save(carro);
@@ -31,7 +38,6 @@ class CarroRepositoryTest {
     @Test
     void GivenCarroList_whenFindAllByAtivoTrue_thenReturnCarroListWithOnlyCarrosAtivos() {
         //Given
-        Carro carro = new Carro("Fiat", 25F, 3, true, 2);
         Carro carro2 = new Carro("Gol", 15F, 2, false, 1);
         repository.save(carro);
         repository.save(carro2);
@@ -48,7 +54,6 @@ class CarroRepositoryTest {
     @Test
     void GivenCarroList_whenFindAll_thenReturnCarroList() {
         //Given
-        Carro carro = new Carro("Fiat", 25F, 3, true, 2);
         Carro carro2 = new Carro("Gol", 15F, 2, false, 1);
         repository.save(carro);
         repository.save(carro2);
@@ -65,7 +70,6 @@ class CarroRepositoryTest {
     @Test
     void GivenCarroId_whenFindById_thenReturnCarro() {
         //Given
-        Carro carro = new Carro("Fiat", 25F, 3, true, 2);
         repository.save(carro);
 
         //When

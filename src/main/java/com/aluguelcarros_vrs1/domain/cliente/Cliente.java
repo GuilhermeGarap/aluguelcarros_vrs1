@@ -155,16 +155,6 @@ public class Cliente {
     }
 
 
-    public boolean verificadorCpf(String cpf) {
-        CPFValidator cpfValidator = new CPFValidator();
-    try {
-        cpfValidator.assertValid(cpf);
-        return true;
-    } catch (InvalidStateException e) {
-        return false;
-    }
-}
-
     @Override
     public int hashCode() {
         int hash = 3;

@@ -1,0 +1,69 @@
+package com.aluguelcarros_vrs1.domainservices.carroservices;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.aluguelcarros_vrs1.domain.carro.Carro;
+import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
+import com.aluguelcarros_vrs1.domain.carro.DadosCadastroCarro;
+import com.aluguelcarros_vrs1.domain.carro.DadosDetalhamentoCarro;
+import com.aluguelcarros_vrs1.domain.carro.DadosEditarCarro;
+import com.aluguelcarros_vrs1.domain.carro.DadosListaCarro;
+
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+
+@Service
+public class CarroService {
+
+    @Autowired
+    private CarroRepository carroRepository;
+
+    @Transactional
+    public DadosDetalhamentoCarro cadastrar(@Valid DadosCadastroCarro dados) {
+        var carro = new Carro(dados);
+        carroRepository.save(carro);
+        return new DadosDetalhamentoCarro(carro);
+    }
+
+    public List<DadosListaCarro> listarAtivos() {
+        List<Carro> carrosAtivos = carroRepository.findAllByAtivoTrue();
+        return carrosAtivos.stream()
+                .map(DadosListaCarro::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public DadosDetalhamentoCarro atualizar(Long id, @Valid DadosEditarCarro dados) {
+        var carro = carroRepository.getReferenceById(id);
+        carro.atualizarInformacoes(dados);
+        return new DadosDetalhamentoCarro(carro);
+    }
+
+    @Transactional
+    public DadosDetalhamentoCarro desativar(Long id) {
+        var carro = carroRepository.getReferenceById(id);
+        carro.desativar();
+        carroRepository.save(carro);
+        return new DadosDetalhamentoCarro(carro);
+    }
+
+    @Transactional
+    public DadosDetalhamentoCarro ativar(Long id) {
+        var carro = carroRepository.getReferenceById(id);
+        if (carro.getAtivo() == false) {
+            carro.ativar();
+            carroRepository.save(carro);
+            return new DadosDetalhamentoCarro(carro);
+        }
+        return null;
+    }
+
+    public DadosDetalhamentoCarro buscar(Long id) {
+        var carro = carroRepository.getReferenceById(id);
+        return new DadosDetalhamentoCarro(carro);
+    }
+}

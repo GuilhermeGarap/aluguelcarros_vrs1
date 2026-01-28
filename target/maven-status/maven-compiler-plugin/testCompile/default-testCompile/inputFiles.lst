@@ -1,2 +1,9 @@
 C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\ApiApplicationTestes.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\domain\aluguel\AluguelRepositoryTest.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\domain\carro\CarroRepositoryTest.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\domain\cliente\ClienteRepositoryTest.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\domain\usuario\UsuarioRepositoryTest.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\domainservices\aluguelservices\AluguelLogicaCarroDisponivelTest.java
 C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\domainservices\aluguelservices\AluguelServiceTest.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\domainservices\aluguelservices\AluguelValidadorDataTest.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\test\java\com\aluguelcarros_vrs1\domainservices\clienteservices\ClienteServiceTest.java

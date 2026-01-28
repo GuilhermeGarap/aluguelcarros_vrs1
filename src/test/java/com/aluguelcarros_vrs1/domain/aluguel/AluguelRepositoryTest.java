@@ -4,7 +4,9 @@ import com.aluguelcarros_vrs1.domain.carro.Carro;
 import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
 import com.aluguelcarros_vrs1.domain.cliente.Cliente;
 import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
+import com.aluguelcarros_vrs1.domain.endereco.DadosEndereco;
 import com.aluguelcarros_vrs1.domain.endereco.Endereco;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -26,13 +28,23 @@ class AluguelRepositoryTest {
     @Autowired
     ClienteRepository clienteRepository;
 
+    Endereco dadosEnd1;
+    Cliente cliente;
+    Carro carro;
+    Aluguel aluguel;
+
+    @BeforeEach
+    void setup() {
+        dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
+        cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
+        carro = new Carro("Fiat", 25F, 3, true, 2);
+        aluguel = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), true, cliente, carro);
+
+    }
+
     @Test
     void givenAluguelObject_whenSave_thenReturnSavedAluguel() {
         //Given
-        Endereco dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
-        Carro carro = new Carro("Fiat", 25F, 3, true, 2);
-        Aluguel aluguel = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), true, cliente, carro);
 
         //Then
         Aluguel aluguelSalvo = repository.save(aluguel);
@@ -48,11 +60,6 @@ class AluguelRepositoryTest {
     @Test
     void givenAluguelList_whenFindAllByAtivo_thenReturnAluguelListWithOnlyAlugueisAtivos() {
         //Given
-        Endereco dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
-        Carro carro = new Carro("Fiat", 25F, 3, true, 2);
-        Aluguel aluguel = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), true, cliente, carro);
-
         Endereco dadosEnd2 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
         Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
         Carro carro2 = new Carro("Fiat", 25F, 3, true, 2);
@@ -77,11 +84,6 @@ class AluguelRepositoryTest {
     @Test
     void givenAluguelList_whenFindAllByFalse_thenReturnAluguelListWithOnlyAlugueisDesativados() {
         //Given
-        Endereco dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
-        Carro carro = new Carro("Fiat", 25F, 3, true, 2);
-        Aluguel aluguel = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), true, cliente, carro);
-
         Endereco dadosEnd2 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
         Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
         Carro carro2 = new Carro("Fiat", 25F, 3, true, 2);
@@ -106,10 +108,6 @@ class AluguelRepositoryTest {
     @Test
     void givenAluguelList_whenFindAll_thenReturnAluguelList() {
         //Given
-        Endereco dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
-        Carro carro = new Carro("Fiat", 25F, 3, true, 2);
-        Aluguel aluguel = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), true, cliente, carro);
 
         Endereco dadosEnd2 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
         Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);

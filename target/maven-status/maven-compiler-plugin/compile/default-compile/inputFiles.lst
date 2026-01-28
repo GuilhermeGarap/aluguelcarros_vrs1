@@ -35,6 +35,8 @@ C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguel
 C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguelcarros_vrs1\domainservices\aluguelservices\AluguelValidarClienteAtivo.java
 C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguelcarros_vrs1\domainservices\aluguelservices\usuarioservice\AutenticacaoService.java
 C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguelcarros_vrs1\domainservices\aluguelservices\ValidarSeClienteTemAluguelAtivo.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguelcarros_vrs1\domainservices\carroservices\CarroService.java
+C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguelcarros_vrs1\domainservices\clienteservices\ClienteService.java
 C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguelcarros_vrs1\domainservices\ValidacaoException.java
 C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguelcarros_vrs1\infra\exception\TratadorDeErros.java
 C:\Users\Conex\OneDrive\Desktop\Projetos\aluguelcarros\src\main\java\com\aluguelcarros_vrs1\infra\security\DadosTokenJWT.java

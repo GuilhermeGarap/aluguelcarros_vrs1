@@ -1,9 +1,7 @@
 package com.aluguelcarros_vrs1.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.aluguelcarros_vrs1.domain.cliente.Cliente;
-import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
 import com.aluguelcarros_vrs1.domain.cliente.DadosCadastroCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosDetalhamentoCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosEditarCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosListaCliente;
+import com.aluguelcarros_vrs1.domainservices.clienteservices.ClienteService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -38,30 +35,20 @@ import jakarta.validation.Valid;
 public class ClienteController {
 
     @Autowired
-    private ClienteRepository repository;
+    private ClienteService clienteService;
 
     @Operation(summary = "Cadastra um novo cliente", description = "Endpoint para registrar um novo cliente")
     @PostMapping("/cadastrar")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> cadastrar(@RequestBody @Valid DadosCadastroCliente dados, UriComponentsBuilder uriBuilder) {
-        var cliente = new Cliente(dados);
-        if (!cliente.verificadorCpf(cliente.getCpf())) {
-            throw new ValidacaoException("CPF Inválido!");
-        }
-        repository.save(cliente);
-
-        var uri = uriBuilder.path("/cliente/cadastrar/{id}").buildAndExpand(cliente.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(new DadosDetalhamentoCliente(cliente));
+        var dto = clienteService.cadastrar(dados);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Lista todos os clientes ativos", description = "Endpoint para listar todos os clientes ativos sem paginação")
     @GetMapping("/listar")
     public ResponseEntity<List<DadosListaCliente>> listar() {
-        List<DadosListaCliente> clientesAtivos = repository.findAllByAtivoTrue()
-            .stream()
-            .map(DadosListaCliente::new) 
-            .collect(Collectors.toList()); 
+        List<DadosListaCliente> clientesAtivos = clienteService.listarAtivos();
         return ResponseEntity.ok(clientesAtivos);
     }
 
@@ -69,32 +56,25 @@ public class ClienteController {
     @PutMapping("/editar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> atualizar(@PathVariable Long id, @RequestBody @Valid DadosEditarCliente dados) {
-        var cliente = repository.getReferenceById(id);
-        cliente.atualizarInformacoes(dados);
-
-        return ResponseEntity.ok(new DadosDetalhamentoCliente(cliente));
+        var dto = clienteService.atualizar(id, dados);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Desativa um cliente", description = "Endpoint para desativar um cliente")
     @DeleteMapping("/desativar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> desativar(@PathVariable Long id) {
-        var cliente = repository.getReferenceById(id);
-        cliente.desativar();
-        repository.save(cliente); // Salvando o cliente desativado
-
-        return ResponseEntity.ok(new DadosDetalhamentoCliente(cliente));
+        var dto = clienteService.desativar(id);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Ativa um cliente", description = "Endpoint para ativar um cliente")
     @PatchMapping("/ativar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCliente> ativar(@PathVariable Long id) {
-        var cliente = repository.getReferenceById(id);
-        if (!cliente.getAtivo()) {
-            cliente.ativar();
-            repository.save(cliente); // Salvando o cliente ativado
-            return ResponseEntity.ok(new DadosDetalhamentoCliente(cliente));
+        var dto = clienteService.ativar(id);
+        if (dto != null) {
+            return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
@@ -103,8 +83,7 @@ public class ClienteController {
     @Operation(summary = "Busca um cliente pelo ID", description = "Endpoint para buscar um cliente pelo ID")
     @GetMapping("/buscar/{id}")
     public ResponseEntity<DadosDetalhamentoCliente> buscar(@PathVariable Long id) {
-        var cliente = repository.getReferenceById(id);
-
-        return ResponseEntity.ok(new DadosDetalhamentoCliente(cliente));
+        var dto = clienteService.buscar(id);
+        return ResponseEntity.ok(dto);
     }
 }

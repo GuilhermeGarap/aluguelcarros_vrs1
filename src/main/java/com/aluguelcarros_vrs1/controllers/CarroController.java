@@ -1,7 +1,6 @@
 package com.aluguelcarros_vrs1.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.aluguelcarros_vrs1.domain.carro.Carro;
-import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
 import com.aluguelcarros_vrs1.domain.carro.DadosCadastroCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosDetalhamentoCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosEditarCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosListaCarro;
+import com.aluguelcarros_vrs1.domainservices.carroservices.CarroService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,7 +40,7 @@ import jakarta.validation.Valid;
 public class CarroController {
 
     @Autowired
-    private CarroRepository repository;
+    private CarroService carroService;
 
     @Operation(summary = "Cadastrar um novo carro", description = "Cria um novo carro no sistema e retorna os detalhes do carro cadastrado.")
     @ApiResponses({
@@ -52,11 +50,8 @@ public class CarroController {
     @PostMapping("/cadastrar")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCarro> cadastrar(@RequestBody @Valid DadosCadastroCarro dados, UriComponentsBuilder uriBuilder) {
-        var carro = new Carro(dados);
-        repository.save(carro);
-
-        var uri = uriBuilder.path("/carro/cadastrar/{id}").buildAndExpand(carro.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DadosDetalhamentoCarro(carro));
+        var dto = carroService.cadastrar(dados);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Listar carros", description = "Retorna uma lista de carros ativos.")
@@ -65,13 +60,7 @@ public class CarroController {
     })
     @GetMapping("/listar")
     public ResponseEntity<List<DadosListaCarro>> listar() {
-        List<Carro> carrosAtivos = repository.findAllByAtivoTrue();
-        
-
-        List<DadosListaCarro> dadosCarros = carrosAtivos.stream()
-                .map(DadosListaCarro::new)  
-                .collect(Collectors.toList());
-        
+        List<DadosListaCarro> dadosCarros = carroService.listarAtivos();
         return ResponseEntity.ok(dadosCarros);
     }
 
@@ -87,9 +76,8 @@ public class CarroController {
         @Parameter(description = "ID do carro a ser atualizado", example = "1")
         @PathVariable Long id, 
         @RequestBody @Valid DadosEditarCarro dados) {
-        var carro = repository.getReferenceById(id);
-        carro.atualizarInformacoes(dados);
-        return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
+        var dto = carroService.atualizar(id, dados);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Desativar um carro", description = "Desativa um carro específico pelo ID.")
@@ -99,10 +87,8 @@ public class CarroController {
     @DeleteMapping("/desativar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCarro> desativar(@PathVariable Long id) {
-        var carro = repository.getReferenceById(id);
-        carro.desativar();
-        repository.save(carro);
-        return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
+        var dto = carroService.desativar(id);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Ativar um carro", description = "Reativa um carro desativado pelo ID.")
@@ -113,11 +99,9 @@ public class CarroController {
     @PatchMapping("/ativar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoCarro> ativar(@PathVariable Long id) {
-        var carro = repository.getReferenceById(id);
-        if (carro.getAtivo() == false) {
-            carro.ativar();
-            repository.save(carro);
-            return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
+        var dto = carroService.ativar(id);
+        if (dto != null) {
+            return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
@@ -129,7 +113,7 @@ public class CarroController {
     })
     @GetMapping("/buscar/{id}")
     public ResponseEntity<DadosDetalhamentoCarro> buscar(@PathVariable Long id) {
-        var carro = repository.getReferenceById(id);
-        return ResponseEntity.ok(new DadosDetalhamentoCarro(carro));
+        var dto = carroService.buscar(id);
+        return ResponseEntity.ok(dto);
     }
 }

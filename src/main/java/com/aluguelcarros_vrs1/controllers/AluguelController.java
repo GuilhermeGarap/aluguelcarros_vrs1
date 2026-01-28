@@ -1,7 +1,6 @@
 package com.aluguelcarros_vrs1.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
-import com.aluguelcarros_vrs1.domain.aluguel.AluguelRepository;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosDetalhamentoAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosEditarAluguel;
@@ -36,9 +33,6 @@ import jakarta.validation.Valid;
 @SecurityRequirement(name = "bearer-key")
 @Tag(name = " Aluguel", description = "Gerenciamento de aluguéis de carros")
 public class AluguelController {
-    
-    @Autowired
-    private AluguelRepository repository;
 
     @Autowired
     private AluguelService aluguelService;
@@ -54,41 +48,29 @@ public class AluguelController {
     @Operation(summary = "Lista todos os aluguéis ativos", description = "Retorna uma lista de aluguéis ativos")
     @GetMapping("/listarAtivos")
     public ResponseEntity<List<DadosListaAluguel>> listarAtivos() {
-        List<Aluguel> alugueisAtivos = repository.findAllByAtivoTrue();  
-        List<DadosListaAluguel> dadosAlugueisAtivos = alugueisAtivos.stream()
-            .map(DadosListaAluguel::new) 
-            .collect(Collectors.toList());  
-        return ResponseEntity.ok(dadosAlugueisAtivos); 
+        List<DadosListaAluguel> dadosAlugueisAtivos = aluguelService.listarAtivos();
+        return ResponseEntity.ok(dadosAlugueisAtivos);
     }
 
     @Operation(summary = "Lista todos os aluguéis desativados", description = "Retorna uma lista de aluguéis desativados")
     @GetMapping("/listarDesativados")
     public ResponseEntity<List<DadosListaAluguel>> listarDesativados() {
-        List<Aluguel> alugueisDesativados = repository.findAllByAtivoFalse();  
-        List<DadosListaAluguel> dadosAlugueisDesativados = alugueisDesativados.stream()
-            .map(DadosListaAluguel::new) 
-            .collect(Collectors.toList());  
+        List<DadosListaAluguel> dadosAlugueisDesativados = aluguelService.listarDesativados();
         return ResponseEntity.ok(dadosAlugueisDesativados); 
     }
 
     @Operation(summary = "Lista todos os aluguéis", description = "Retorna uma lista de todos os aluguéis")
     @GetMapping("/listarTodos")
     public ResponseEntity<List<DadosListaAluguel>> listarTodos() {
-        List<Aluguel> todosAlugueis = repository.findAll();  
-        List<DadosListaAluguel> dadosTodosAlugueis = todosAlugueis.stream()
-            .map(DadosListaAluguel::new) 
-            .collect(Collectors.toList());  
+        List<DadosListaAluguel> dadosTodosAlugueis = aluguelService.listarTodos();
         return ResponseEntity.ok(dadosTodosAlugueis); 
     }
-
-
 
     @Operation(summary = "Atualiza um aluguel", description = "Atualiza as informações de um aluguel existente")
     @PutMapping("/editar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoAluguel> atualizar(@PathVariable Long id, @RequestBody DadosEditarAluguel dados) {
-        var aluguel = repository.getReferenceById(id);
-        aluguel.atualizarInformacoes(dados);
+        var aluguel = aluguelService.atualizar(id, dados);
         return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
     }
 
@@ -96,10 +78,9 @@ public class AluguelController {
     @PatchMapping("/ativar/{id}")
     @Transactional
     public ResponseEntity<DadosDetalhamentoAluguel> ativar(@PathVariable Long id) {
-        var aluguel = repository.getReferenceById(id);
-        if (aluguel.getAtivo() == false) {
-            aluguel.ativar();
-            return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
+        var dto = aluguelService.ativar(id);
+        if (dto != null) {
+            return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
@@ -108,16 +89,16 @@ public class AluguelController {
     @Operation(summary = "Busca um aluguel pelo ID", description = "Retorna um aluguel com base no ID fornecido")
     @GetMapping("/buscar/{id}")
     public ResponseEntity<DadosDetalhamentoAluguel> buscar(@PathVariable Long id) {
-        var aluguel = repository.getReferenceById(id);
-        return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
+        var dto = aluguelService.buscar(id);
+        return ResponseEntity.ok(dto);
     }
 
     @Operation(summary = "Desativa um aluguel", description = "Desativa um aluguel e incrementa a disponibilidade do carro associado")
     @DeleteMapping("/desativar/{id}")
     public ResponseEntity<Object> desativar(@PathVariable Long id) {
         try {
-            Aluguel aluguel = aluguelService.desativarAluguel(id);
-            return ResponseEntity.ok(new DadosDetalhamentoAluguel(aluguel));
+            var dto = aluguelService.desativarAluguel(id);
+            return ResponseEntity.ok(dto);
         } catch (ValidacaoException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
