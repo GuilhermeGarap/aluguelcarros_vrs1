@@ -42,4 +42,18 @@ class UsuarioRepositoryTest {
         assertNotNull(listaUsuarios);
         assertEquals(2, listaUsuarios.size());
     }
+
+    @Test
+    void testGivenUsuarioUsername_whenFindByUsername_thenReturnUsuario() {
+        //Given
+        Usuario usuario = new Usuario("roberto@gmail.com", "r12345");
+        repository.save(usuario);
+
+        //When
+        var usuarioSalvo = repository.findBylogin(usuario.getUsername());
+
+        //Then
+        assertNotNull(usuarioSalvo);
+        assertEquals("roberto@gmail.com", usuarioSalvo.getUsername());
+    }
 }
