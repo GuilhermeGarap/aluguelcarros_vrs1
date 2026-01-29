@@ -1,17 +1,17 @@
 package com.aluguelcarros_vrs1.domainservices.aluguelservices;
 
-import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
+import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 
 @ExtendWith(MockitoExtension.class)
 class AluguelValidadorDataTest {
@@ -21,7 +21,7 @@ class AluguelValidadorDataTest {
 
     @Test
     @DisplayName("Lança exceção quando a data de início for um domingo")
-    void validarCenarioDataInicioDomingo() {
+    void testGivenStartDateIsSunday_whenValidar_thenThrowValidacaoException() {
         var dataInicioDomingo = LocalDate.of(2025, 1, 19);
         var dataTerminoSegunda = LocalDate.of(2025, 1, 20);
 
@@ -32,7 +32,7 @@ class AluguelValidadorDataTest {
 
     @Test
     @DisplayName("Lança exceção quando a data de término for um domingo")
-    void validarCenarioDataTerminoDomingo() {
+    void testGivenEndDateIsSunday_whenValidar_thenThrowValidacaoException() {
 
         var dataInicioSabado = LocalDate.of(2025, 1, 18);
         var dataTerminoDomingo = LocalDate.of(2025, 1, 19);
@@ -44,7 +44,7 @@ class AluguelValidadorDataTest {
 
     @Test
     @DisplayName("Não lança exceção quando nenhuma data for domingo")
-    void validarCenarioSucesso() {
+    void testGivenValidDates_whenValidar_thenDoesNotThrowException() {
 
         var dataInicioSegunda = LocalDate.of(2025, 1, 20);
         var dataTerminoTerca = LocalDate.of(2025, 1, 21);

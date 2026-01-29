@@ -17,16 +17,9 @@ public class ValidarSeClienteTemAluguelAtivo implements AluguelValidador {
     @Override
     @SuppressWarnings("null")
     public void validar(DadosCadastroAluguel dados) {
-        // Buscar o cliente pelo ID
         Cliente cliente = repository.findById(dados.cliente_id())
             .orElseThrow(() -> new ValidacaoException("Cliente não encontrado"));
-        
-        // Verificar se o cliente está ativo
-        if (!cliente.getAtivo()) {
-            throw new ValidacaoException("Esse cliente está desativado no sistema");
-        }
-        
-        // Verificar se o cliente tem algum aluguel ativo
+
         boolean temAluguelAtivo = cliente.getAlugueis().stream()
             .anyMatch(aluguel -> aluguel.getAtivo());
         

@@ -15,4 +15,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
         WHERE c.id = :id
     """)
     Boolean findAtivoById(Long id);
+    Boolean existsByCpf(String cpf);
+    Boolean existsByNome(String nome);
+    Boolean existsByTelefone(String telefone);
+    Boolean existsByEmail(String email);
 }

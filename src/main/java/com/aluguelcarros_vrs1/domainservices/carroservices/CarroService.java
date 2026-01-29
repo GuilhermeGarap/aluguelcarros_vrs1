@@ -1,8 +1,10 @@
 package com.aluguelcarros_vrs1.domainservices.carroservices;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,9 @@ public class CarroService {
 
     @Transactional
     public DadosDetalhamentoCarro cadastrar(@Valid DadosCadastroCarro dados) {
+        if (carroRepository.existsByModelo(dados.modelo())) {
+            throw new ValidacaoException("Esse nome de modelo de carro já está registrado");
+        }
         var carro = new Carro(dados);
         carroRepository.save(carro);
         return new DadosDetalhamentoCarro(carro);
@@ -39,6 +44,9 @@ public class CarroService {
     @Transactional
     public DadosDetalhamentoCarro atualizar(Long id, @Valid DadosEditarCarro dados) {
         var carro = carroRepository.getReferenceById(id);
+        if (carroRepository.existsByModelo(dados.modelo())) {
+            throw new ValidacaoException("Algum outro carro já possui esse nome de modelo");
+        }
         carro.atualizarInformacoes(dados);
         return new DadosDetalhamentoCarro(carro);
     }
@@ -63,7 +71,9 @@ public class CarroService {
     }
 
     public DadosDetalhamentoCarro buscar(Long id) {
-        var carro = carroRepository.getReferenceById(id);
+        var carro = carroRepository.findById(id)
+                .orElseThrow(() -> new ValidacaoException("Não existe um carro com esse ID"));
+
         return new DadosDetalhamentoCarro(carro);
     }
 }

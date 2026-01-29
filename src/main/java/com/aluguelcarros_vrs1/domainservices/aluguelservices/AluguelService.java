@@ -137,7 +137,8 @@ public class AluguelService {
     }
 
     public DadosDetalhamentoAluguel buscar(Long id) {
-        var aluguel = aluguelRepository.getReferenceById(id);
+        var aluguel = aluguelRepository.findById(id)
+                .orElseThrow(() -> new ValidacaoException("Não existe um aluguel com esse ID"));
         return new DadosDetalhamentoAluguel(aluguel);
     }
 }

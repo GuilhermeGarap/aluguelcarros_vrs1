@@ -15,6 +15,6 @@ public interface CarroRepository extends JpaRepository<Carro, Long> {
         WHERE c.id = :id
         """)
     Boolean findAtivoById(Long id);
-
+    Boolean existsByModelo(String modelo);
 }
 

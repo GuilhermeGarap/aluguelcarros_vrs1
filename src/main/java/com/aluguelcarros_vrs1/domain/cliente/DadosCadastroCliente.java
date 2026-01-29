@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Schema(description = "Modelo para criar um novo cliente")
 public record DadosCadastroCliente(
@@ -27,7 +28,8 @@ public record DadosCadastroCliente(
 
     @Schema(description = "CPF do Cliente", example = "123.456.789-00")
     @NotBlank(message = "CPF é obrigatório")
-    @Pattern(regexp= "\\d{3}\\.?\\d{3}\\.?\\d{3}\\-?\\d{2}")
+    @CPF(message = "O CPF precisa ser válido! ")
+    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "O CPF deve ser enviado no formato xxx.xxx.xxx-xx")
     String cpf,
 
     @NotNull(message = "Dados do endereço são obrigatórios")

@@ -3,6 +3,8 @@ package com.aluguelcarros_vrs1.domainservices.clienteservices;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,18 @@ public class ClienteService {
 
     @Transactional
     public DadosDetalhamentoCliente cadastrar(@Valid DadosCadastroCliente dados) {
+            if (clienteRepository.existsByCpf(dados.cpf())) {
+                throw new ValidacaoException("Já existe um cliente cadastrado com esse CPF!");
+        }
+            if (clienteRepository.existsByEmail(dados.email())) {
+                throw new ValidacaoException("Já existe um cliente cadastrado com esse email!");
+            }
+            if (clienteRepository.existsByNome(dados.nome())) {
+                throw new ValidacaoException(("Já existe um cliente cadastrado com esse nome!"));
+            }
+            if (clienteRepository.existsByTelefone(dados.telefone())) {
+                throw new ValidacaoException("Já existe um cliente cadastrado com esse telefone!");
+            }
         var cliente = new Cliente(dados);
         clienteRepository.save(cliente);
         return new DadosDetalhamentoCliente(cliente);
@@ -39,6 +53,13 @@ public class ClienteService {
     @Transactional
     public DadosDetalhamentoCliente atualizar(Long id, @Valid DadosEditarCliente dados) {
         var cliente = clienteRepository.getReferenceById(id);
+
+        if (clienteRepository.existsByNome(dados.nome()) || clienteRepository.existsByNome(cliente.getNome())) {
+            throw new ValidacaoException(("Já existe um cliente cadastrado com esse nome ou é o mesmo já cadastrado"));
+        }
+        if (clienteRepository.existsByTelefone(dados.telefone()) || clienteRepository.existsByNome(cliente.getTelefone())) {
+            throw new ValidacaoException("Já existe um cliente cadastrado com esse telefone ou é o mesmo já cadastrado");
+        }
         cliente.atualizarInformacoes(dados);
         return new DadosDetalhamentoCliente(cliente);
     }
@@ -63,7 +84,9 @@ public class ClienteService {
     }
 
     public DadosDetalhamentoCliente buscar(Long id) {
-        var cliente = clienteRepository.getReferenceById(id);
+        var cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ValidacaoException("Cliente não encontrado com o ID: " + id));
+
         return new DadosDetalhamentoCliente(cliente);
     }
 }

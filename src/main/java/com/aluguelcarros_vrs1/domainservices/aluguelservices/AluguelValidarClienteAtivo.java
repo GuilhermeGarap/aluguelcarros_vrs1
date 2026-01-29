@@ -16,7 +16,6 @@ public class AluguelValidarClienteAtivo implements AluguelValidador {
     @Override
     public void validar(DadosCadastroAluguel dados) {
         var clienteAtivo = repository.findAtivoById(dados.cliente_id());
-        System.out.println("Verificando se o cliente está ativo: " + clienteAtivo);
         if (!clienteAtivo) {
             throw new ValidacaoException("Esse cliente está desativado no sistema");
         }

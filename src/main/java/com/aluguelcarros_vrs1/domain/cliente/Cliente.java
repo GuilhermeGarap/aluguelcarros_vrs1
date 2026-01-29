@@ -37,7 +37,6 @@ public class Cliente {
     public Cliente () {
 
     }
-
     
     public Cliente(DadosCadastroCliente dados) {
         this.nome = dados.nome();
