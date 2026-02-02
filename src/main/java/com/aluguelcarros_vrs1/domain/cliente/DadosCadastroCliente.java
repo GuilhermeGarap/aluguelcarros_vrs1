@@ -29,7 +29,6 @@ public record DadosCadastroCliente(
     @Schema(description = "CPF do Cliente", example = "123.456.789-00")
     @NotBlank(message = "CPF é obrigatório")
     @CPF(message = "O CPF precisa ser válido! ")
-    @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "O CPF deve ser enviado no formato xxx.xxx.xxx-xx")
     String cpf,
 
     @NotNull(message = "Dados do endereço são obrigatórios")
