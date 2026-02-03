@@ -26,6 +26,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
     return http
         .csrf(csrf -> csrf.disable())
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .cors(org.springframework.security.config.Customizer.withDefaults())
         .authorizeHttpRequests(authz -> 
             authz
                 .requestMatchers(HttpMethod.POST, "/autenticacao/login").permitAll()
