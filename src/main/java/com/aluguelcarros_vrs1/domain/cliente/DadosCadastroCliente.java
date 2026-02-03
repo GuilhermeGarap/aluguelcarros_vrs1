@@ -39,7 +39,7 @@ public record DadosCadastroCliente(
     @CPF(message = "O CPF precisa ser válido! ")
     String cpf,
 
-    @NotBlank(message = "Data de Nascimento do Cliente é obrigatório")
+    @NotNull(message = "Data de Nascimento do Cliente é obrigatório")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @JsonFormat(pattern = "dd/MM/yyyy")
     LocalDate dataNascimento,
