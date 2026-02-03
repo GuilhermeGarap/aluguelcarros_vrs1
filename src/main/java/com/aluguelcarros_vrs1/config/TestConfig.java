@@ -77,10 +77,10 @@ public class TestConfig implements CommandLineRunner{
         DadosEndereco dadosEnd4 = new DadosEndereco("Rua Bandeira Paulista", "500", "Pinheiros", "Apto 1202", "05417-020", "São Paulo", "SP");
 
         // Criando clientes de teste usando DTO
-        DadosCadastroCliente dadosCliente1 = new DadosCadastroCliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1);
-        DadosCadastroCliente dadosCliente2 = new DadosCadastroCliente("Maria Santos", "maria@email.com", "11987654322", "123.456.789-01", dadosEnd2);
-        DadosCadastroCliente dadosCliente3 = new DadosCadastroCliente("Carlos Oliveira", "carlos@email.com", "11987654323", "123.456.789-02", dadosEnd3);
-        DadosCadastroCliente dadosCliente4 = new DadosCadastroCliente("Ana Costa", "ana@email.com", "11987654324", "123.456.789-03", dadosEnd4);
+        DadosCadastroCliente dadosCliente1 = new DadosCadastroCliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", LocalDate.of(2015, 1, 12), dadosEnd1);
+        DadosCadastroCliente dadosCliente2 = new DadosCadastroCliente("Maria Santos", "maria@email.com", "11987654322", "123.456.789-01", LocalDate.of(2015, 4, 13), dadosEnd2);
+        DadosCadastroCliente dadosCliente3 = new DadosCadastroCliente("Carlos Oliveira", "carlos@email.com", "11987654323", "123.456.789-02", LocalDate.of(2015, 5, 15), dadosEnd3);
+        DadosCadastroCliente dadosCliente4 = new DadosCadastroCliente("Ana Costa", "ana@email.com", "11987654324", "123.456.789-03", LocalDate.of(2015, 11, 20), dadosEnd4);
 
         Cliente cl1 = new Cliente(dadosCliente1);
         Cliente cl2 = new Cliente(dadosCliente2);
