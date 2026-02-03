@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +13,7 @@ import com.aluguelcarros_vrs1.domain.carro.DadosCadastroCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosDetalhamentoCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosEditarCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosListaCarro;
+import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

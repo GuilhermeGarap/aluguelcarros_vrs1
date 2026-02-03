@@ -6,8 +6,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @RestControllerAdvice

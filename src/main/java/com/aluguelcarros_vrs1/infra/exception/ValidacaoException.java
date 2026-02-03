@@ -1,4 +1,4 @@
-package com.aluguelcarros_vrs1.domainservices;
+package com.aluguelcarros_vrs1.infra.exception;
 
 
 public class ValidacaoException extends RuntimeException {

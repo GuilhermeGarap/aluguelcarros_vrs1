@@ -3,7 +3,6 @@ package com.aluguelcarros_vrs1.domainservices.clienteservices;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import com.aluguelcarros_vrs1.domain.cliente.DadosCadastroCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosDetalhamentoCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosEditarCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosListaCliente;
+import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

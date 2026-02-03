@@ -5,7 +5,7 @@ import java.time.DayOfWeek;
 import org.springframework.stereotype.Component;
 
 import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
+import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 @Component
 public class AluguelValidadorData implements AluguelValidador{

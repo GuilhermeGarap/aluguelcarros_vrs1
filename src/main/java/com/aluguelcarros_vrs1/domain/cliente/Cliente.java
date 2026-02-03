@@ -1,5 +1,6 @@
 package com.aluguelcarros_vrs1.domain.cliente;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,6 +29,7 @@ public class Cliente {
     private String telefone;
     private String email;
     private String cpf;
+    private LocalDate dataNascimento;
     private Endereco endereco;
     private Boolean ativo;
     
@@ -43,22 +45,25 @@ public class Cliente {
         this.email = dados.email();
         this.telefone = dados.telefone();
         this.cpf = dados.cpf();
+        this.dataNascimento = dados.dataNascimento();
         this.endereco = new Endereco(dados.endereco());
         this.ativo = true;
     }
 
-    public Cliente(String nome, String telefone, String email, String cpf, Endereco endereco, Boolean ativo) {
+    public Cliente(String nome, String telefone, String email, String cpf, LocalDate dataNascimento, Endereco endereco, Boolean ativo) {
         this.nome = nome;
         this.telefone = telefone;
         this.email = email;
         this.cpf = cpf;
+        this.dataNascimento = dataNascimento;
         this.endereco = endereco;
         this.ativo = ativo;
     }
 
-    public Cliente(Boolean ativo, String cpf, String email, Endereco endereco, Long id, String nome, String telefone) {
+    public Cliente(Boolean ativo, String cpf, LocalDate dataNascimento, String email, Endereco endereco, Long id, String nome, String telefone) {
         this.ativo = ativo;
         this.cpf = cpf;
+        this.dataNascimento = dataNascimento;
         this.email = email;
         this.endereco = endereco;
         this.id = id;
@@ -132,6 +137,13 @@ public class Cliente {
         this.alugueis = alugueis;
     }
 
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
 
     public void atualizarInformacoes(DadosEditarCliente dados) {
         if(dados.nome() != null) {

@@ -19,7 +19,7 @@ import com.aluguelcarros_vrs1.domain.aluguel.DadosListaAluguel;
 import com.aluguelcarros_vrs1.domain.carro.Carro;
 import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
 import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
+import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;

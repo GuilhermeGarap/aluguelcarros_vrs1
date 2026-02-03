@@ -19,8 +19,8 @@ import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosDetalhamentoAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosEditarAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosListaAluguel;
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
 import com.aluguelcarros_vrs1.domainservices.aluguelservices.AluguelService;
+import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

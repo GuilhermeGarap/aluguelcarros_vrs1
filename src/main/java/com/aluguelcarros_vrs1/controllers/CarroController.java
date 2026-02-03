@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.aluguelcarros_vrs1.domain.carro.DadosCadastroCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosDetalhamentoCarro;
@@ -49,7 +48,7 @@ public class CarroController {
     })
     @PostMapping("/cadastrar")
     @Transactional
-    public ResponseEntity<DadosDetalhamentoCarro> cadastrar(@RequestBody @Valid DadosCadastroCarro dados, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<DadosDetalhamentoCarro> cadastrar(@RequestBody @Valid DadosCadastroCarro dados) {
         var dto = carroService.cadastrar(dados);
         return ResponseEntity.ok(dto);
     }
