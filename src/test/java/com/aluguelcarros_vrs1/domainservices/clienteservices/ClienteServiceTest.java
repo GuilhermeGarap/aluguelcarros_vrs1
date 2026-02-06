@@ -1,5 +1,6 @@
 package com.aluguelcarros_vrs1.domainservices.clienteservices;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,13 +23,13 @@ import static org.mockito.Mockito.verify;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.aluguelcarros_vrs1.domain.cliente.Cliente;
-import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
+import com.aluguelcarros_vrs1.repositories.ClienteRepository;
 import com.aluguelcarros_vrs1.domain.cliente.DadosCadastroCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosDetalhamentoCliente;
 import com.aluguelcarros_vrs1.domain.cliente.DadosEditarCliente;
 import com.aluguelcarros_vrs1.domain.endereco.DadosEndereco;
 import com.aluguelcarros_vrs1.domain.endereco.Endereco;
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
+import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ClienteService Tests")
@@ -55,12 +56,16 @@ class ClienteServiceTest {
             "robertT@email.com",
             "1155443322",
             "123.456.789-12",
+            LocalDate.of(2003, 1, 12),
             dadosEndereco
         );
         
         dadosEditar = new DadosEditarCliente(
-            "JRoberto dos Testes Atualizado",
-            "11987654999",
+                "JRoberto dos Testes Atualizado",
+                "jroberto@email.com",
+                "11987654999",
+                "70579012832",
+            LocalDate.of(2005, 4, 15),
             dadosEndereco
         );
 
@@ -178,7 +183,7 @@ class ClienteServiceTest {
     @DisplayName("Retornar uma lista válida de todos os clientes ativos")
     void testGivenClientenList_whenFindAllByAtivoTrue_thenReturnClienteList() {
         // Given
-        Cliente cliente2 = new Cliente("Marcos Testes", "12999999999", "marcosteste@gmail.com", "108.172.710-15", endereco, true);
+        Cliente cliente2 = new Cliente("Marcos Testes", "12999999999", "marcosteste@gmail.com", "108.172.710-15", LocalDate.of(2003, 12, 03), endereco, true);
 
         cliente.setAtivo(true);
         cliente2.setAtivo(true);
@@ -200,10 +205,6 @@ class ClienteServiceTest {
     @DisplayName("Retornar uma lista vazia de todos os clientes ativos")
     void testGivenEmptyClientenList_whenFindAllByAtivoTrue_thenReturnEmptyClienteList() {
         // Given
-        Cliente cliente2 = new Cliente("Marcos Testes", "12999999999", "marcosteste@gmail.com", "108.172.710-15", endereco, true);
-
-        cliente.setAtivo(true);
-        cliente2.setAtivo(true);
 
         // When
         given(repository.findAllByAtivoTrue()).willReturn(Collections.emptyList());
@@ -247,24 +248,59 @@ class ClienteServiceTest {
         assertEquals("Cliente não encontrado com o ID: " + idInexistente, exception.getMessage());
     }
 
-    // @Test
-    // @DisplayName("Edição válida retorna cliente atualizado")
-    // void testGivenValidDadosEditarClienteObject_whenGetReferenceById_thenSaveClienteUpdated() {
-    //     // Given
-    //     given(repository.existsByNome(dadosCadastro.nome())).willReturn(false);
-    //     given(repository.existsByTelefone(dadosCadastro.telefone())).willReturn(false);
+     @Test
+     @DisplayName("Edição válida retorna cliente atualizado")
+     void testGivenValidDadosEditarClienteObject_whenGetReferenceById_thenSaveClienteUpdated() {
+         // Given
+         given(repository.getReferenceById(anyLong())).willReturn(cliente);
+         given(repository.existsByNome(dadosEditar.nome())).willReturn(false);
+         given(repository.existsByTelefone(dadosEditar.telefone())).willReturn(false);
 
-    //     given(cliente.atualizarInformacoes())
-    //     given(repository.save(any(Cliente.class))).willReturn(cliente);
+         // When
+         DadosDetalhamentoCliente resultado = services.atualizar(cliente.getId(), dadosEditar);
 
-    //     // When
-    //     var resultado = services.cadastrar(dadosCadastro);
+         // Then
+         assertNotNull(resultado);
+         assertEquals(dadosEditar.nome(), resultado.nome());
+         assertEquals(dadosEditar.telefone(), resultado.telefone());
 
-    //     // Then
-    //     assertNotNull(resultado);
-    //     assertEquals(dadosCadastro.nome(), resultado.nome());
+         verify(repository).getReferenceById(cliente.getId());
+         verify(repository).existsByNome(dadosEditar.nome());
+         verify(repository).existsByTelefone(dadosEditar.telefone());
+     }
 
-    //     verify(repository).save(any(Cliente.class));
-    //     verify(repository).existsByCpf(dadosCadastro.cpf());
-    // }
+    @Test
+    @DisplayName("Ativação válida de cliente desativado")
+    void testGivenDisabledClient_whenAtivar_thenClientActive() {
+        //Given
+        cliente.setAtivo(false);
+        given(repository.getReferenceById(cliente.getId())).willReturn(cliente);
+
+        //When
+        DadosDetalhamentoCliente resultado = services.ativar(cliente.getId());
+
+        //Then
+        assertEquals(resultado.ativo(), true);
+        assertEquals(cliente.getAtivo(), resultado.ativo());
+        verify(repository).getReferenceById(cliente.getId());
+        verify(repository).save(cliente);
+    }
+
+    @Test
+    @DisplayName("Desativação válida de cliente ativo")
+    void testGivenActiveClient_whenDesativar_thenClientDisabled() {
+        //Given
+        given(repository.getReferenceById(cliente.getId())).willReturn(cliente);
+
+        //When
+        DadosDetalhamentoCliente resultado = services.desativar(cliente.getId());
+
+        //Then
+        assertEquals(false, resultado.ativo() );
+        assertEquals(cliente.getAtivo(), resultado.ativo());
+        verify(repository).getReferenceById(cliente.getId());
+        verify(repository).save(cliente);
+    }
+
+
 }

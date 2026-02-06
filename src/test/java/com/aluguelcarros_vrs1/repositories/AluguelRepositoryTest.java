@@ -1,10 +1,8 @@
-package com.aluguelcarros_vrs1.domain.aluguel;
+package com.aluguelcarros_vrs1.repositories;
 
+import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
 import com.aluguelcarros_vrs1.domain.carro.Carro;
-import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
 import com.aluguelcarros_vrs1.domain.cliente.Cliente;
-import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
-import com.aluguelcarros_vrs1.domain.endereco.DadosEndereco;
 import com.aluguelcarros_vrs1.domain.endereco.Endereco;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +34,7 @@ class AluguelRepositoryTest {
     @BeforeEach
     void setup() {
         dadosEnd1 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
+        cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", LocalDate.of(2003, 05, 01), dadosEnd1, true);
         carro = new Carro("Fiat", 25F, 3, true, 2);
         aluguel = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), true, cliente, carro);
 
@@ -61,7 +59,7 @@ class AluguelRepositoryTest {
     void givenAluguelList_whenFindAllByAtivo_thenReturnAluguelListWithOnlyAlugueisAtivos() {
         //Given
         Endereco dadosEnd2 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
+        Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", LocalDate.of(2003, 05, 01), dadosEnd1, true);
         Carro carro2 = new Carro("Fiat", 25F, 3, true, 2);
         Aluguel aluguel2 = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), false, cliente, carro);
 
@@ -85,7 +83,7 @@ class AluguelRepositoryTest {
     void givenAluguelList_whenFindAllByFalse_thenReturnAluguelListWithOnlyAlugueisDesativados() {
         //Given
         Endereco dadosEnd2 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
+        Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", LocalDate.of(2003, 05, 01), dadosEnd1, true);
         Carro carro2 = new Carro("Fiat", 25F, 3, true, 2);
         Aluguel aluguel2 = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), false, cliente, carro);
 
@@ -110,7 +108,7 @@ class AluguelRepositoryTest {
         //Given
 
         Endereco dadosEnd2 = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
-        Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", dadosEnd1, true);
+        Cliente cliente2 = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", LocalDate.of(2003, 05, 01), dadosEnd1, true);
         Carro carro2 = new Carro("Fiat", 25F, 3, true, 2);
         Aluguel aluguel2 = new Aluguel(LocalDate.of(2026, 1, 20), LocalDate.of(2026, 1, 25), false, cliente, carro);
 

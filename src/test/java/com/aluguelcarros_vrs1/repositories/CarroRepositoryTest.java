@@ -1,5 +1,6 @@
-package com.aluguelcarros_vrs1.domain.carro;
+package com.aluguelcarros_vrs1.repositories;
 
+import com.aluguelcarros_vrs1.domain.carro.Carro;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

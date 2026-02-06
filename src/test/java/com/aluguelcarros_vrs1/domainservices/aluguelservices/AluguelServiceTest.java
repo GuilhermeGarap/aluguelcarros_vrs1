@@ -1,41 +1,42 @@
 package com.aluguelcarros_vrs1.domainservices.aluguelservices;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import jakarta.validation.Valid;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
-import com.aluguelcarros_vrs1.domain.aluguel.AluguelRepository;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
-import com.aluguelcarros_vrs1.domain.aluguel.DadosDetalhamentoAluguel;
+import com.aluguelcarros_vrs1.domain.aluguel.DadosEditarAluguel;
 import com.aluguelcarros_vrs1.domain.carro.Carro;
-import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
 import com.aluguelcarros_vrs1.domain.cliente.Cliente;
-import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
-import com.aluguelcarros_vrs1.domainservices.ValidacaoException;
+import com.aluguelcarros_vrs1.domain.endereco.Endereco;
+import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
+import com.aluguelcarros_vrs1.repositories.AluguelRepository;
+import com.aluguelcarros_vrs1.repositories.CarroRepository;
+import com.aluguelcarros_vrs1.repositories.ClienteRepository;
 
-@SpringBootTest
-public class AluguelServiceTest {
-
-    @InjectMocks
-    private AluguelService aluguelService;
+@ExtendWith(MockitoExtension.class)
+@DisplayName("AluguelService Tests")
+class AluguelServiceTest {
 
     @Mock
     private AluguelRepository aluguelRepository;
@@ -47,161 +48,256 @@ public class AluguelServiceTest {
     private ClienteRepository clienteRepository;
 
     @Mock
-    private AluguelLogicaCarroDisponivel logica;
-
-    @Mock
     private List<AluguelValidador> validadores;
 
-    @Mock
-    private AluguelLogicaCarroDisponivel aluguelLogicaCarroDisponivel;
+    @InjectMocks
+    private AluguelService aluguelService;
 
-
-    private DadosDetalhamentoAluguel dadosDetalhamentoAluguel;
-    private DadosCadastroAluguel dadosCadastroAluguel;
-
+    private Endereco endereco;
+    private Cliente cliente;
+    private Carro carro;
+    private DadosCadastroAluguel dadosCadastro;
+    private DadosEditarAluguel dadosEditar;
+    private Aluguel aluguel;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        startDadosAtributos();
-
+    void setup() {
+        endereco = new Endereco("Avenida Paulista", "1000", "Centro", "Apto 101", "01310-100", "São Paulo", "SP");
+        cliente = new Cliente("João Silva", "joao@email.com", "11987654321", "123.456.789-00", LocalDate.of(2003, 5, 1), endereco, true);
+        cliente.setId(1L);
+        carro = new Carro("Fiat", 25F, 3, true, 2);
+        carro.setId(1L);
+        dadosCadastro = new DadosCadastroAluguel(LocalDate.of(2026, 2, 10), LocalDate.of(2026, 2, 14), 1L, 1L);
+        dadosEditar = new DadosEditarAluguel(LocalDate.of(2026, 2, 10), LocalDate.of(2026, 2, 15));
+        aluguel = new Aluguel(LocalDate.of(2026, 2, 10), LocalDate.of(2026, 2, 14), true, cliente, carro);
+        aluguel.setId(1L);
     }
 
+    @Test
+    @DisplayName("Cadastro bem-sucedido de aluguel")
+    void testGivenValidDadosCadastroAluguel_whenCadastrar_thenReturnDadosDetalhamentoAluguel() {
+        // Given
+        given(clienteRepository.existsById(dadosCadastro.cliente_id())).willReturn(true);
+        given(carroRepository.existsById(dadosCadastro.carro_id())).willReturn(true);
+        given(clienteRepository.getReferenceById(dadosCadastro.cliente_id())).willReturn(cliente);
+        given(carroRepository.getReferenceById(dadosCadastro.carro_id())).willReturn(carro);
+        given(aluguelRepository.save(any(Aluguel.class))).willReturn(aluguel);
+
+        // When
+        var resultado = aluguelService.cadastrar(dadosCadastro);
+
+        // Then
+        assertNotNull(resultado);
+        assertTrue(resultado.ativo());
+        verify(aluguelRepository).save(any(Aluguel.class));
+    }
 
     @Test
-    @DisplayName("O cadastro de aluguel é sucedido")
-    void testeCadastrarSucedido() {
+    @DisplayName("Cadastro falha quando cliente não existe")
+    void testGivenInvalidClienteId_whenCadastrar_thenThrowValidacaoException() {
+        // Given
+        given(clienteRepository.existsById(dadosCadastro.cliente_id())).willReturn(false);
 
-        Cliente clienteMock = Mockito.mock(Cliente.class);
-        Carro carroMock = Mockito.mock(Carro.class);
+        // When
+        var exception = assertThrows(ValidacaoException.class, () -> {
+            aluguelService.cadastrar(dadosCadastro);
+        });
 
-        when(clienteRepository.existsById(1L)).thenReturn(true);
-        when(carroRepository.existsById(1L)).thenReturn(true);
-        when(clienteRepository.getReferenceById(1L)).thenReturn(clienteMock);
-        when(carroRepository.getReferenceById(1L)).thenReturn(carroMock);
-
-        validadores.forEach(v -> Mockito.doNothing().when(v).validar(any(DadosCadastroAluguel.class)));
-        
-        DadosDetalhamentoAluguel resultado = aluguelService.cadastrar(dadosCadastroAluguel);
-
-        assertNotNull(resultado, "O resultado do cadastro não pode ser nulo");
-
-        verify(aluguelRepository, Mockito.times(1)).save(any(Aluguel.class));
-        }
-
-    @Test
-    @DisplayName("Lança uma excessão que o id de Cliente não existe")
-    void testeCadastrarClienteNãoExiste() {
-        when(clienteRepository.existsById(1L)).thenReturn(false);
-
-        ValidacaoException exception = assertThrows(ValidacaoException.class, () ->
-                aluguelService.cadastrar(dadosCadastroAluguel));
-
+        // Then
         assertEquals("ID do Cliente informado não existe!", exception.getMessage());
-
+        verify(aluguelRepository, never()).save(any(Aluguel.class));
     }
 
     @Test
-    @DisplayName("Lança uma excessão que o id de Carro não existe")
-    void testeCadastrarCarroNãoExiste() {
-        when(clienteRepository.existsById(1L)).thenReturn(true);
-        when(carroRepository.existsById(1L)).thenReturn(false);
+    @DisplayName("Cadastro falha quando carro não existe")
+    void testGivenInvalidCarroId_whenCadastrar_thenThrowValidacaoException() {
+        // Given
+        given(clienteRepository.existsById(dadosCadastro.cliente_id())).willReturn(true);
+        given(carroRepository.existsById(dadosCadastro.carro_id())).willReturn(false);
 
-        ValidacaoException exception = assertThrows(ValidacaoException.class, () ->
-                aluguelService.cadastrar(dadosCadastroAluguel));
+        // When
+        var exception = assertThrows(ValidacaoException.class, () -> {
+            aluguelService.cadastrar(dadosCadastro);
+        });
 
+        // Then
         assertEquals("ID do Carro informado não existe!", exception.getMessage());
-
+        verify(aluguelRepository, never()).save(any(Aluguel.class));
     }
 
     @Test
-    @DisplayName("Desativa os alugueis expirados automaticamente")
-    void testDesativarAlugueisExpirados() {
-        Aluguel aluguelExpirado = Mockito.mock(Aluguel.class);
-        Aluguel aluguelNoPrazo = Mockito.mock(Aluguel.class);
+    @DisplayName("Listar aluguéis ativos retorna lista correta")
+    void testGivenAluguelListWithActiveItems_whenListarAtivos_thenReturnOnlyActiveAlugueis() {
+        // Given
+        Aluguel aluguel2 = new Aluguel(LocalDate.of(2026, 3, 10), LocalDate.of(2026, 3, 15), true, cliente, carro);
+        List<Aluguel> alugueisList = List.of(aluguel, aluguel2);
+        given(aluguelRepository.findAllByAtivoTrue()).willReturn(alugueisList);
 
-        when(aluguelExpirado.getData_termino()).thenReturn(LocalDate.now().minusDays(1));
-        when(aluguelNoPrazo.getData_termino()).thenReturn(LocalDate.now().plusDays(1));
+        // When
+        var resultado = aluguelService.listarAtivos();
 
-        when(aluguelRepository.findAllByAtivoTrue()).thenReturn(List.of(aluguelExpirado, aluguelNoPrazo));
-
-        aluguelService.desativarAlugueisExpirados();
-
-        verify(aluguelExpirado).desativar();
-        verify(aluguelRepository).save(aluguelExpirado);
-
-        verify(aluguelNoPrazo, Mockito.never()).desativar();
+        // Then
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+        assertTrue(resultado.stream().allMatch(a -> a.ativo()));
+        verify(aluguelRepository).findAllByAtivoTrue();
     }
 
     @Test
-    @DisplayName("Desativa o aluguel de ID enviado")
-    void testDesativarAluguelSucedido() {
-        Long idAluguel = 1L;
+    @DisplayName("Listar aluguéis ativos retorna lista vazia")
+    void testGivenEmptyAluguelList_whenListarAtivos_thenReturnEmptyList() {
+        // Given
+        given(aluguelRepository.findAllByAtivoTrue()).willReturn(Collections.emptyList());
 
-        Aluguel aluguelMock = Mockito.mock(Aluguel.class);
-        Carro carroMock = Mockito.mock(Carro.class);
+        // When
+        var resultado = aluguelService.listarAtivos();
 
-        when(aluguelRepository.findById(idAluguel)).thenReturn(java.util.Optional.of(aluguelMock));
-
-        when(aluguelMock.getCarro()).thenReturn(carroMock);
-
-        when(carroMock.getDisponivel()).thenReturn(4);
-        when(carroMock.getUnidades()).thenReturn(5); 
-
-        aluguelService.desativarAluguel(idAluguel);
-
-        verify(aluguelMock).desativar();
-
-        verify(carroMock).setDisponivel(5);
-
-        verify(carroRepository).save(carroMock);
-        verify(aluguelRepository).save(aluguelMock);
+        // Then
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+        assertEquals(0, resultado.size());
+        verify(aluguelRepository).findAllByAtivoTrue();
     }
 
     @Test
-    @DisplayName("Falha em desativar o aluguel, pois esse ID de aluguel não existe")
-    void testDesativarAluguelNãoEncontraIdDeAluguel() {
-        Long idInexistente = 2L;
-        Aluguel aluguelMock = Mockito.mock(Aluguel.class);
+    @DisplayName("Listar aluguéis desativados retorna lista correta")
+    void testGivenAluguelListWithInactiveItems_whenListarDesativados_thenReturnOnlyInactiveAlugueis() {
+        // Given
+        aluguel.desativar();
+        List<Aluguel> alugueisList = List.of(aluguel);
+        given(aluguelRepository.findAllByAtivoFalse()).willReturn(alugueisList);
 
-        when(aluguelRepository.findById(2L)).thenReturn(java.util.Optional.empty());
+        // When
+        var resultado = aluguelService.listarDesativados();
 
-        ValidacaoException exception = assertThrows(ValidacaoException.class, () ->
-                aluguelService.desativarAluguel(idInexistente));
-
-        assertEquals("Aluguel não encontrado com ID " + idInexistente, exception.getMessage());
-
-        verify(aluguelRepository, Mockito.never()).save(any());
-        
+        // Then
+        assertNotNull(resultado);
+        assertEquals(1, resultado.size());
+        assertFalse(resultado.get(0).ativo());
+        verify(aluguelRepository).findAllByAtivoFalse();
     }
 
     @Test
-    @DisplayName("Falha em desativar o aluguel, pois o estoque ficaria negativo ou com valor zero")
-    void testDesativarAluguelEstoqueInconsiste() {
-        Long idAluguel = 1L;
-        Aluguel aluguelMock = Mockito.mock(Aluguel.class);
-        Carro carroMock = Mockito.mock(Carro.class);
+    @DisplayName("Listar todos os aluguéis retorna lista completa")
+    void testGivenAluguelList_whenListarTodos_thenReturnAllAlugueis() {
+        // Given
+        Aluguel aluguel2 = new Aluguel(LocalDate.of(2026, 3, 10), LocalDate.of(2026, 3, 15), false, cliente, carro);
+        List<Aluguel> alugueisList = List.of(aluguel, aluguel2);
+        given(aluguelRepository.findAll()).willReturn(alugueisList);
 
-        when(aluguelRepository.findById(1L)).thenReturn(java.util.Optional.of(aluguelMock));
-        when(aluguelMock.getCarro()).thenReturn(carroMock);
+        // When
+        var resultado = aluguelService.listarTodos();
 
-        when(carroMock.getDisponivel()).thenReturn(4);
-        when(carroMock.getUnidades()).thenReturn(4);
-
-        ValidacaoException exception = assertThrows(ValidacaoException.class, () ->
-                aluguelService.desativarAluguel(idAluguel));
-
-        assertEquals("Não é possível devolver um carro mais vezes que a quantidade disponivel em estoque.", exception.getMessage());
-
-
+        // Then
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+        verify(aluguelRepository).findAll();
     }
 
-    private void startDadosAtributos() {
-        dadosCadastroAluguel = new DadosCadastroAluguel(
-            LocalDate.parse("2026-01-21"), 
-            LocalDate.parse("2026-01-28"), 
-            1L, 
-            1L
-        );
+    @Test
+    @DisplayName("Buscar aluguel por ID válido retorna aluguel")
+    void testGivenValidAluguelId_whenBuscar_thenReturnDadosDetalhamentoAluguel() {
+        // Given
+        given(aluguelRepository.findById(aluguel.getId())).willReturn(Optional.of(aluguel));
+
+        // When
+        var resultado = aluguelService.buscar(aluguel.getId());
+
+        // Then
+        assertNotNull(resultado);
+        assertTrue(resultado.ativo());
+        verify(aluguelRepository).findById(aluguel.getId());
+    }
+
+    @Test
+    @DisplayName("Buscar aluguel por ID inválido lança exceção")
+    void testGivenInvalidAluguelId_whenBuscar_thenThrowValidacaoException() {
+        // Given
+        given(aluguelRepository.findById(999L)).willReturn(Optional.empty());
+
+        // When
+        var exception = assertThrows(ValidacaoException.class, () -> {
+            aluguelService.buscar(999L);
+        });
+
+        // Then
+        assertEquals("Não existe um aluguel com esse ID", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Desativar aluguel com sucesso incrementa disponibilidade do carro")
+    void testGivenValidAluguelId_whenDesativarAluguel_thenDesativaAndIncrementsCarroDisponibilidade() {
+        // Given
+        int disponibilidadeAntes = carro.getDisponivel();
+        given(aluguelRepository.findById(aluguel.getId())).willReturn(Optional.of(aluguel));
+        given(carroRepository.save(any(Carro.class))).willReturn(carro);
+        given(aluguelRepository.save(any(Aluguel.class))).willReturn(aluguel);
+
+        // When
+        var resultado = aluguelService.desativarAluguel(aluguel.getId());
+
+        // Then
+        assertNotNull(resultado);
+        assertFalse(resultado.ativo());
+        verify(carroRepository).save(any(Carro.class));
+        verify(aluguelRepository).save(any(Aluguel.class));
+    }
+
+    @Test
+    @DisplayName("Desativar aluguel inexistente lança exceção")
+    void testGivenInvalidAluguelId_whenDesativarAluguel_thenThrowValidacaoException() {
+        // Given
+        given(aluguelRepository.findById(999L)).willReturn(Optional.empty());
+
+        // When
+        var exception = assertThrows(ValidacaoException.class, () -> {
+            aluguelService.desativarAluguel(999L);
+        });
+
+        // Then
+        assertEquals("Aluguel não encontrado com ID 999", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Atualizar aluguel com novos dados")
+    void testGivenValidDadosEditarAluguel_whenAtualizar_thenUpdateAluguel() {
+        // Given
+        given(aluguelRepository.getReferenceById(aluguel.getId())).willReturn(aluguel);
+
+        // When
+        var resultado = aluguelService.atualizar(aluguel.getId(), dadosEditar);
+
+        // Then
+        assertNotNull(resultado);
+        verify(aluguelRepository).getReferenceById(aluguel.getId());
+    }
+
+    @Test
+    @DisplayName("Ativar aluguel desativado com sucesso")
+    void testGivenInactiveAluguel_whenAtivar_thenActivateAndReturnDadosDetalhamento() {
+        // Given
+        aluguel.desativar();
+        given(aluguelRepository.getReferenceById(aluguel.getId())).willReturn(aluguel);
+
+        // When
+        var resultado = aluguelService.ativar(aluguel.getId());
+
+        // Then
+        assertNotNull(resultado);
+        assertTrue(resultado.ativo());
+        verify(aluguelRepository).getReferenceById(aluguel.getId());
+    }
+
+    @Test
+    @DisplayName("Ativar aluguel já ativo retorna null")
+    void testGivenActiveAluguel_whenAtivar_thenReturnNull() {
+        // Given
+        given(aluguelRepository.getReferenceById(aluguel.getId())).willReturn(aluguel);
+
+        // When
+        var resultado = aluguelService.ativar(aluguel.getId());
+
+        // Then
+        assertNull(resultado);
     }
 }

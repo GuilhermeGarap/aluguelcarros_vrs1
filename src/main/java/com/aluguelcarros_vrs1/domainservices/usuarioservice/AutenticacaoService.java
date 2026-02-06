@@ -1,4 +1,4 @@
-package com.aluguelcarros_vrs1.domainservices.aluguelservices.usuarioservice;
+package com.aluguelcarros_vrs1.domainservices.usuarioservice;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,10 +13,9 @@ public class AutenticacaoService implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository repository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findBylogin(username);
     }
-    
-    
 }
