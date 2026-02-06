@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
-import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
+import com.aluguelcarros_vrs1.repositories.CarroRepository;
 import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 @Component

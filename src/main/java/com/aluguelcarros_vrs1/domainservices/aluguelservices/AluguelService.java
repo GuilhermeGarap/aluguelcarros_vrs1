@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
-import com.aluguelcarros_vrs1.domain.aluguel.AluguelRepository;
+import com.aluguelcarros_vrs1.repositories.AluguelRepository;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosDetalhamentoAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosEditarAluguel;
 import com.aluguelcarros_vrs1.domain.aluguel.DadosListaAluguel;
 import com.aluguelcarros_vrs1.domain.carro.Carro;
-import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
-import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
+import com.aluguelcarros_vrs1.repositories.CarroRepository;
+import com.aluguelcarros_vrs1.repositories.ClienteRepository;
 import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 import jakarta.transaction.Transactional;

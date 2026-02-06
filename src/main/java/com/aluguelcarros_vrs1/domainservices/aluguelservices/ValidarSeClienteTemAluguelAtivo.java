@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.aluguelcarros_vrs1.domain.aluguel.DadosCadastroAluguel;
 import com.aluguelcarros_vrs1.domain.cliente.Cliente;
-import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
+import com.aluguelcarros_vrs1.repositories.ClienteRepository;
 import com.aluguelcarros_vrs1.infra.exception.ValidacaoException;
 
 @Component

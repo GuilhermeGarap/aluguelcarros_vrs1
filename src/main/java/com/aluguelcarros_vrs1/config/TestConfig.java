@@ -10,16 +10,16 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
-import com.aluguelcarros_vrs1.domain.aluguel.AluguelRepository;
+import com.aluguelcarros_vrs1.repositories.AluguelRepository;
 import com.aluguelcarros_vrs1.domain.carro.Carro;
-import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
+import com.aluguelcarros_vrs1.repositories.CarroRepository;
 import com.aluguelcarros_vrs1.domain.carro.DadosCadastroCarro;
 import com.aluguelcarros_vrs1.domain.cliente.Cliente;
-import com.aluguelcarros_vrs1.domain.cliente.ClienteRepository;
+import com.aluguelcarros_vrs1.repositories.ClienteRepository;
 import com.aluguelcarros_vrs1.domain.cliente.DadosCadastroCliente;
 import com.aluguelcarros_vrs1.domain.endereco.DadosEndereco;
 import com.aluguelcarros_vrs1.domain.usuario.Usuario;
-import com.aluguelcarros_vrs1.domain.usuario.UsuarioRepository;
+import com.aluguelcarros_vrs1.repositories.UsuarioRepository;
 
 @Configuration
 @Profile("test")
@@ -50,8 +50,8 @@ public class TestConfig implements CommandLineRunner{
         usuarioRepository.save(usuario1);
 
         Usuario usuario2 = new Usuario();
-        usuario2.setLogin("admin@aluguelcarros.com");
-        usuario2.setSenha(passwordEncoder.encode("admin123"));
+        usuario2.setLogin("puff@gmail.com");
+        usuario2.setSenha(passwordEncoder.encode("PuffDev123"));
         usuarioRepository.save(usuario2);
 
         // Criando carros de teste usando DTO

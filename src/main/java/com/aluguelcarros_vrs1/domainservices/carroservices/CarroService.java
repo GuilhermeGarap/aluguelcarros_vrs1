@@ -1,14 +1,13 @@
 package com.aluguelcarros_vrs1.domainservices.carroservices;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.aluguelcarros_vrs1.domain.carro.Carro;
-import com.aluguelcarros_vrs1.domain.carro.CarroRepository;
+import com.aluguelcarros_vrs1.repositories.CarroRepository;
 import com.aluguelcarros_vrs1.domain.carro.DadosCadastroCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosDetalhamentoCarro;
 import com.aluguelcarros_vrs1.domain.carro.DadosEditarCarro;
@@ -27,7 +26,7 @@ public class CarroService {
     @Transactional
     public DadosDetalhamentoCarro cadastrar(@Valid DadosCadastroCarro dados) {
         if (carroRepository.existsByModelo(dados.modelo())) {
-            throw new ValidacaoException("Esse nome de modelo de carro já está registrado");
+            throw new ValidacaoException("Esse nome de modelo de carro já está registrado!");
         }
         var carro = new Carro(dados);
         carroRepository.save(carro);

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.aluguelcarros_vrs1.domain.usuario.UsuarioRepository;
+import com.aluguelcarros_vrs1.repositories.UsuarioRepository;
 
 @Service
 public class AutenticacaoService implements UserDetailsService {
