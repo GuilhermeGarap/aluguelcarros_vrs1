@@ -28,7 +28,7 @@ public class Carro {
     private Integer disponivel;
 
     @OneToMany(mappedBy = "carro", cascade = CascadeType.ALL)
-    private List<Aluguel> alugueis;  // Mudei de @OneToOne para @OneToMany
+    private List<Aluguel> alugueis;
 
     public Carro() {
 

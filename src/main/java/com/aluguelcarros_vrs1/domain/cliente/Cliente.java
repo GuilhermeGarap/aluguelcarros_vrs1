@@ -7,8 +7,6 @@ import java.util.Objects;
 import com.aluguelcarros_vrs1.domain.aluguel.Aluguel;
 import com.aluguelcarros_vrs1.domain.endereco.Endereco;
 
-import br.com.caelum.stella.validation.CPFValidator;
-import br.com.caelum.stella.validation.InvalidStateException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
