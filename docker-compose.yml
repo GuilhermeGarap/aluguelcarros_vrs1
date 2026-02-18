@@ -22,7 +22,7 @@ services:
         - TZ=America/Sao_Paulo
         - SPRING_PROFILES_ACTIVE=production
         - SERVER_ADDRESS=0.0.0.0
-        - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=50.0 -XX:UserSerialGC -Xss256k -XX:MaxMetaspaceSize=100m
+        - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=60.0 -XX:+UseSerialGC -Xss256k -XX:MaxMetaspaceSize=200m
       restart: always
       mem_limit: 512m
       networks:
