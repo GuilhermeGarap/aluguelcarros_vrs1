@@ -1,0 +1,33 @@
+services:
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: always
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./nginx_data:/data
+      - ./nginx_letsencrypt:/etc/letsencrypt
+    mem_limit: 200m
+    networks:
+      - guilhermegarap
+
+  aluguelcarros-api:
+      image: guilhermegarap/aluguelcarros-api
+      container_name: aluguelcarros-api
+      env_file:
+        - .env
+      environment:
+        - TZ=America/Sao_Paulo
+        - SPRING_PROFILES_ACTIVE=production
+        - SERVER_ADDRESS=0.0.0.0
+        - JAVA_TOOL_OPTIONS=-XX:MaxRAMPercentage=50.0 -XX:UserSerialGC -Xss256k -XX:MaxMetaspaceSize=100m
+      restart: always
+      mem_limit: 512m
+      networks:
+        - guilhermegarap
+
+networks:
+  guilhermegarap:
+    driver: bridge
