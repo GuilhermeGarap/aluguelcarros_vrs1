@@ -2,7 +2,7 @@
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.java.net/projects/jdk/17/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.3-green.svg)](https://spring.io/projects/spring-boot)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue.svg)](https://www.mysql.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-blue.svg)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Sistema completo de gerenciamento de aluguel de carros desenvolvido em Java com Spring Boot. Oferece funcionalidades robustas para controle de clientes, veículos, aluguéis e autenticação de usuários.
@@ -61,7 +61,7 @@ Sistema completo de gerenciamento de aluguel de carros desenvolvido em Java com 
 - **Spring Boot 3.3.3** - Framework principal
 - **Spring Security** - Autenticação e autorização
 - **Spring Data JPA** - Persistência de dados
-- **MySQL 8.0** - Banco de dados
+- **PostgreSQL 12+** - Banco de dados
 - **Flyway** - Migração de banco de dados
 - **JWT** - Tokens de autenticação
 - **Lombok** - Redução de boilerplate
@@ -72,7 +72,7 @@ Sistema completo de gerenciamento de aluguel de carros desenvolvido em Java com 
 ## Pré-requisitos
 
 - Java 17 ou superior
-- MySQL 8.0 ou superior
+- PostgreSQL 12 ou superior
 - Maven 3.6+
 - IDE (recomendado: IntelliJ IDEA, Eclipse ou VS Code)
 
@@ -85,11 +85,11 @@ Sistema completo de gerenciamento de aluguel de carros desenvolvido em Java com 
    ```
 
 2. **Configure o banco de dados**
+   Execute as migrações Flyway automaticamente ou configure manualmente um banco PostgreSQL:
    ```sql
    CREATE DATABASE aluguelcarros;
-   CREATE USER 'aluguelcarros_user'@'localhost' IDENTIFIED BY 'sua_senha';
-   GRANT ALL PRIVILEGES ON aluguelcarros.* TO 'aluguelcarros_user'@'localhost';
-   FLUSH PRIVILEGES;
+   CREATE USER aluguelcarros_user WITH PASSWORD 'sua_senha';
+   GRANT ALL PRIVILEGES ON DATABASE aluguelcarros TO aluguelcarros_user;
    ```
 
 3. **Configure as variáveis de ambiente**
@@ -106,18 +106,18 @@ Sistema completo de gerenciamento de aluguel de carros desenvolvido em Java com 
 
 ```properties
 # Configurações da aplicação
-spring.application.name=aluguelcarros-api
+spring.application.name=aluguelcarros_vrs1
 server.port=8080
 
 # Configurações do banco de dados
-spring.datasource.url=jdbc:mysql://localhost:3306/aluguelcarros
+spring.datasource.url=jdbc:postgresql://localhost:5432/aluguelcarros
 spring.datasource.username=aluguelcarros_user
 spring.datasource.password=sua_senha
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.driver-class-name=org.postgresql.Driver
 
 # JPA/Hibernate
 spring.jpa.hibernate.ddl-auto=validate
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 spring.jpa.properties.hibernate.format_sql=true
 spring.jpa.show-sql=false
 
@@ -148,11 +148,11 @@ server.error.include-message=always
 
 ```bash
 # Login
-curl -X POST http://localhost:8080/auth/login \
+curl -X POST http://localhost:8080/autenticacao/login \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "admin@aluguelcarros.com",
-    "senha": "senha123"
+    "login": "logintestes@hotmail.com",
+    "senha": "senhatestes"
   }'
 ```
 
@@ -160,7 +160,7 @@ curl -X POST http://localhost:8080/auth/login \
 
 ```bash
 # Exemplo de requisição autenticada
-curl -X GET http://localhost:8080/clientes/listar \
+curl -X GET http://localhost:8080/cliente/listar \
   -H "Authorization: Bearer SEU_TOKEN_JWT_AQUI"
 ```
 
@@ -173,17 +173,153 @@ A documentação completa da API está disponível através do Swagger UI:
 
 ### Principais Endpoints
 
+#### Autenticação
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
-| POST | `/auth/login` | Autenticação de usuário |
-| POST | `/clientes/cadastrar` | Cadastrar novo cliente |
-| GET | `/clientes/listar` | Listar clientes ativos |
-| PUT | `/clientes/{id}` | Atualizar cliente |
-| POST | `/carros/cadastrar` | Cadastrar novo carro |
-| GET | `/carros/listar` | Listar carros disponíveis |
+| POST | `/autenticacao/login` | Autenticação de usuário |
+
+#### Clientes
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/cliente/cadastrar` | Cadastrar novo cliente |
+| GET | `/cliente/listar` | Listar clientes ativos |
+| GET | `/cliente/buscar/{id}` | Buscar cliente por ID |
+| PUT | `/cliente/editar/{id}` | Atualizar cliente |
+| DELETE | `/cliente/desativar/{id}` | Desativar cliente |
+| PATCH | `/cliente/ativar/{id}` | Ativar cliente |
+
+#### Carros
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/carro/cadastrar` | Cadastrar novo carro |
+| GET | `/carro/listar` | Listar carros ativos |
+| PUT | `/carro/editar/{id}` | Atualizar carro |
+| DELETE | `/carro/desativar/{id}` | Desativar carro |
+| PATCH | `/carro/ativar/{id}` | Ativar carro |
+
+#### Aluguéis
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
 | POST | `/aluguel/cadastrar` | Criar novo aluguel |
 | GET | `/aluguel/listarAtivos` | Listar aluguéis ativos |
-| GET | `/aluguel/{id}` | Detalhes de um aluguel |
+| GET | `/aluguel/listarDesativados` | Listar aluguéis desativados |
+| GET | `/aluguel/listarTodos` | Listar todos os aluguéis |
+| GET | `/aluguel/buscar/{id}` | Buscar aluguel por ID |
+| PUT | `/aluguel/editar/{id}` | Atualizar aluguel |
+| DELETE | `/aluguel/desativar/{id}` | Desativar aluguel |
+| PATCH | `/aluguel/ativar/{id}` | Ativar aluguel |
+
+## Diagrama de Classes
+
+```mermaid
+classDiagram
+    class Usuario {
+        -Long id
+        -String login
+        -String senha
+        +getAuthorities()
+        +getPassword()
+        +getUsername()
+        +isAccountNonExpired()
+        +isAccountNonLocked()
+        +isCredentialsNonExpired()
+        +isEnabled()
+    }
+
+    class Cliente {
+        -Long id
+        -String nome
+        -String telefone
+        -String email
+        -String cpf
+        -LocalDate dataNascimento
+        -Endereco endereco
+        -Boolean ativo
+        -List~Aluguel~ alugueis
+        +getId()
+        +setId(Long)
+        +getNome()
+        +setNome(String)
+        +getEmail()
+        +setEmail(String)
+        +getCpf()
+        +setCpf(String)
+    }
+
+    class Endereco {
+        -String logradouro
+        -String bairro
+        -String cep
+        -String numero
+        -String complemento
+        -String cidade
+        -String uf
+        +getLogradouro()
+        +setLogradouro(String)
+        +getBairro()
+        +setBairro(String)
+        +getCep()
+        +setCep(String)
+    }
+
+    class Carro {
+        -Long id
+        -String modelo
+        -Float valor_dia
+        -Integer unidades
+        -Boolean ativo
+        -Integer disponivel
+        -List~Aluguel~ alugueis
+        +getId()
+        +setId(Long)
+        +getModelo()
+        +setModelo(String)
+        +getValor_dia()
+        +setValor_dia(Float)
+        +decrementarDisponivel()
+        +incrementarDisponivel()
+    }
+
+    class Aluguel {
+        -Long id
+        -LocalDate data_inicio
+        -LocalDate data_termino
+        -Boolean ativo
+        -Cliente cliente
+        -Carro carro
+        +getId()
+        +setId(Long)
+        +getData_inicio()
+        +setData_inicio(LocalDate)
+        +getData_termino()
+        +setData_termino(LocalDate)
+        +getCliente()
+        +setCliente(Cliente)
+        +getCarro()
+        +setCarro(Carro)
+    }
+
+    Cliente "1" --> "1" Endereco : tem
+    Cliente "1" --> "*" Aluguel : realiza
+    Carro "1" --> "*" Aluguel : possui
+    Aluguel "*" --> "1" Cliente : associa
+    Aluguel "*" --> "1" Carro : associa
+```
+
+### Descrição das Entidades
+
+- **Usuario**: Entidade de autenticação que implementa `UserDetails` para integração com Spring Security
+- **Cliente**: Armazena dados de clientes com endereço embarcado e relacionamento com múltiplos aluguéis
+- **Endereco**: Objeto embarcado no Cliente com informações de localização (sem tabela separada)
+- **Carro**: Gerencia a frota com controle de disponibilidade e unidades
+- **Aluguel**: Relaciona Cliente e Carro com datas de início e término
+
+### Relacionamentos
+
+- Um **Cliente** possui um **Endereço** (embarcado)
+- Um **Cliente** pode realizar múltiplos **Aluguéis**
+- Um **Carro** pode ter múltiplos **Aluguéis**
+- Um **Aluguel** associa um **Cliente** e um **Carro**
 
 ## Estrutura do Projeto
 
