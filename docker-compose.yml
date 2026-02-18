@@ -14,7 +14,7 @@ services:
       - guilhermegarap
 
   aluguelcarros-api:
-      image: guilhermegarap/aluguelcarros-api
+      image: guilhermegarap/aluguelcarros:latest
       container_name: aluguelcarros-api
       env_file:
         - .env
