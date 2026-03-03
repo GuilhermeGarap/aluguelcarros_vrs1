@@ -2,7 +2,7 @@ package com.aluguelcarros_vrs1.repositories;
 
 import java.util.List;
 
-import com.aluguelcarros_vrs1.domain.carro.Carro;
+import com.aluguelcarros_vrs1.domain.Carro;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

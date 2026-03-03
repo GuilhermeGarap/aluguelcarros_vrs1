@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AnaliseProjetoReportGenerator",
+            "request": "launch",
+            "mainClass": "com.aluguelcarros_vrs1.infra.report.AnaliseProjetoReportGenerator",
+            "projectName": "aluguelcarros_vrs1"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-AluguelcarrosVrs1Application<aluguelcarros_vrs1>",
             "request": "launch",
             "cwd": "${workspaceFolder}",

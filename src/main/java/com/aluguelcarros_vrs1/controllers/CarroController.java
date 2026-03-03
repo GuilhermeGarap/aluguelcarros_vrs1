@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.aluguelcarros_vrs1.domain.carro.DadosCadastroCarro;
-import com.aluguelcarros_vrs1.domain.carro.DadosDetalhamentoCarro;
-import com.aluguelcarros_vrs1.domain.carro.DadosEditarCarro;
-import com.aluguelcarros_vrs1.domain.carro.DadosListaCarro;
-import com.aluguelcarros_vrs1.domainservices.carroservices.CarroService;
+import com.aluguelcarros_vrs1.data.carro.DadosCadastroCarro;
+import com.aluguelcarros_vrs1.data.carro.DadosDetalhamentoCarro;
+import com.aluguelcarros_vrs1.data.carro.DadosEditarCarro;
+import com.aluguelcarros_vrs1.data.carro.DadosListaCarro;
+import com.aluguelcarros_vrs1.services.CarroService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,67 +36,43 @@ import jakarta.validation.Valid;
 @RequestMapping("/carro")
 @SecurityRequirement(name = "bearer-key")
 @Tag(name = " Carro", description = "Gerenciamento da frota de carros")
-public class CarroController {
+public class CarroController implements com.aluguelcarros_vrs1.controllers.docs.CarroControllerDoc {
 
     @Autowired
     private CarroService carroService;
 
-    @Operation(summary = "Cadastrar um novo carro", description = "Cria um novo carro no sistema e retorna os detalhes do carro cadastrado.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "201", description = "Carro cadastrado com sucesso", 
-                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = DadosDetalhamentoCarro.class)))
-    })
     @PostMapping("/cadastrar")
-    @Transactional
+    @Override
     public ResponseEntity<DadosDetalhamentoCarro> cadastrar(@RequestBody @Valid DadosCadastroCarro dados) {
         var dto = carroService.cadastrar(dados);
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Listar carros", description = "Retorna uma lista de carros ativos.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Lista de carros retornada com sucesso")
-    })
     @GetMapping("/listar")
+    @Override
     public ResponseEntity<List<DadosListaCarro>> listar() {
         List<DadosListaCarro> dadosCarros = carroService.listarAtivos();
         return ResponseEntity.ok(dadosCarros);
     }
 
-    
-
-    @Operation(summary = "Atualizar informações de um carro", description = "Edita os dados de um carro existente.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Carro atualizado com sucesso")
-    })
     @PutMapping("/editar/{id}")
-    @Transactional
+    @Override
     public ResponseEntity<DadosDetalhamentoCarro> atualizar(
-        @Parameter(description = "ID do carro a ser atualizado", example = "1")
-        @PathVariable Long id, 
-        @RequestBody @Valid DadosEditarCarro dados) {
+            @PathVariable Long id,
+            @RequestBody @Valid DadosEditarCarro dados) {
         var dto = carroService.atualizar(id, dados);
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Desativar um carro", description = "Desativa um carro específico pelo ID.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Carro desativado com sucesso")
-    })
     @DeleteMapping("/desativar/{id}")
-    @Transactional
+    @Override
     public ResponseEntity<DadosDetalhamentoCarro> desativar(@PathVariable Long id) {
         var dto = carroService.desativar(id);
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Ativar um carro", description = "Reativa um carro desativado pelo ID.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Carro ativado com sucesso"),
-        @ApiResponse(responseCode = "304", description = "Carro já está ativo")
-    })
     @PatchMapping("/ativar/{id}")
-    @Transactional
+    @Override
     public ResponseEntity<DadosDetalhamentoCarro> ativar(@PathVariable Long id) {
         var dto = carroService.ativar(id);
         if (dto != null) {
@@ -106,11 +82,8 @@ public class CarroController {
         }
     }
 
-    @Operation(summary = "Buscar um carro por ID", description = "Obtém os detalhes de um carro específico pelo ID.")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Detalhes do carro retornados com sucesso")
-    })
     @GetMapping("/buscar/{id}")
+    @Override
     public ResponseEntity<DadosDetalhamentoCarro> buscar(@PathVariable Long id) {
         var dto = carroService.buscar(id);
         return ResponseEntity.ok(dto);

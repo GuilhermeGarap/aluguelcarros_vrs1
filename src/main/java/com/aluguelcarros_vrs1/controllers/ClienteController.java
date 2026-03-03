@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.aluguelcarros_vrs1.domain.cliente.DadosCadastroCliente;
-import com.aluguelcarros_vrs1.domain.cliente.DadosDetalhamentoCliente;
-import com.aluguelcarros_vrs1.domain.cliente.DadosEditarCliente;
-import com.aluguelcarros_vrs1.domain.cliente.DadosListaCliente;
-import com.aluguelcarros_vrs1.domainservices.clienteservices.ClienteService;
+import com.aluguelcarros_vrs1.data.cliente.DadosCadastroCliente;
+import com.aluguelcarros_vrs1.data.cliente.DadosDetalhamentoCliente;
+import com.aluguelcarros_vrs1.data.cliente.DadosEditarCliente;
+import com.aluguelcarros_vrs1.data.cliente.DadosListaCliente;
+import com.aluguelcarros_vrs1.services.ClienteService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,46 +31,41 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/cliente")
 @SecurityRequirement(name = "bearer-key")
-@Tag(name = "Clientes", description = "Endpoints para gerenciar clientes")
-public class ClienteController {
+public class ClienteController implements com.aluguelcarros_vrs1.controllers.docs.ClienteControllerDoc {
 
     @Autowired
     private ClienteService clienteService;
 
-    @Operation(summary = "Cadastra um novo cliente", description = "Endpoint para registrar um novo cliente")
     @PostMapping("/cadastrar")
-    @Transactional
+    @Override
     public ResponseEntity<DadosDetalhamentoCliente> cadastrar(@RequestBody @Valid DadosCadastroCliente dados, UriComponentsBuilder uriBuilder) {
         var dto = clienteService.cadastrar(dados);
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Lista todos os clientes ativos", description = "Endpoint para listar todos os clientes ativos sem paginação")
     @GetMapping("/listar")
+    @Override
     public ResponseEntity<List<DadosListaCliente>> listar() {
         List<DadosListaCliente> clientesAtivos = clienteService.listarAtivos();
         return ResponseEntity.ok(clientesAtivos);
     }
 
-    @Operation(summary = "Atualiza um cliente", description = "Endpoint para atualizar as informações de um cliente existente")
     @PutMapping("/editar/{id}")
-    @Transactional
+    @Override
     public ResponseEntity<DadosDetalhamentoCliente> atualizar(@PathVariable Long id, @RequestBody @Valid DadosEditarCliente dados) {
         var dto = clienteService.atualizar(id, dados);
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Desativa um cliente", description = "Endpoint para desativar um cliente")
     @DeleteMapping("/desativar/{id}")
-    @Transactional
+    @Override
     public ResponseEntity<DadosDetalhamentoCliente> desativar(@PathVariable Long id) {
         var dto = clienteService.desativar(id);
         return ResponseEntity.ok(dto);
     }
 
-    @Operation(summary = "Ativa um cliente", description = "Endpoint para ativar um cliente")
     @PatchMapping("/ativar/{id}")
-    @Transactional
+    @Override
     public ResponseEntity<DadosDetalhamentoCliente> ativar(@PathVariable Long id) {
         var dto = clienteService.ativar(id);
         if (dto != null) {
@@ -80,8 +75,8 @@ public class ClienteController {
         }
     }
 
-    @Operation(summary = "Busca um cliente pelo ID", description = "Endpoint para buscar um cliente pelo ID")
     @GetMapping("/buscar/{id}")
+    @Override
     public ResponseEntity<DadosDetalhamentoCliente> buscar(@PathVariable Long id) {
         var dto = clienteService.buscar(id);
         return ResponseEntity.ok(dto);

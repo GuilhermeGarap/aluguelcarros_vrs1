@@ -1,10 +1,4 @@
 SELECT setval(
-               pg_get_serial_sequence('usuarios', 'id'),
-               COALESCE((SELECT MAX(id) FROM usuarios), 1),
-               true
-       );
-
-SELECT setval(
                pg_get_serial_sequence('clientes', 'id'),
                COALESCE((SELECT MAX(id) FROM clientes), 1),
                true
